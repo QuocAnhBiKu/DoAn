@@ -40,13 +40,12 @@ async function getAllData() {
             conceptScience: lessonDoc.data().conceptScience || [],
             conceptSkill: lessonDoc.data().conceptSkill || []
           },
-          lessonTechniques: lessonDoc.data().lessonTechniques || [],
           lessonMaterials: {
-            lessonPlanId: lessonDoc.data().linkLessonPlan,
-            slideId: lessonDoc.data().linkSlide,
-            summaryId: lessonDoc.data().linkSummary,
-            quizId: lessonDoc.data().linkQuiz,
-            videoId: lessonDoc.data().linkVideo
+            lessonPlanId: lessonDoc.data().lessonPlanId,
+            slideId: lessonDoc.data().slideId,
+            summaryId: lessonDoc.data().summaryId,
+            quizId: lessonDoc.data().quizId,
+            videoId: lessonDoc.data().videoId
           },
           lessonProject: null
         };
