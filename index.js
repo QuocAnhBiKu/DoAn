@@ -3,6 +3,8 @@ const coursesEndpoint = "http://localhost:3000/api/courses";
 const levelsEndpoint = "http://localhost:3000/api/levels/";
 const lessonsEndpoint = "http://localhost:3000/api/lessons/";
 const courseInfoEndpoint = "http://localhost:3000/api/courses/id/";
+const levelInfoEndpoint = "http://localhost:3000/api/levels/id/";
+const lessonInfoEndpoint = "http://localhost:3000/api/lessons/id/";
 
 // Function to fetch courses from the API
 async function fetchCourses() {
@@ -48,6 +50,30 @@ async function fetchCourseInfo(courseId) {
     return courseInfo;
   } catch (error) {
     console.error("Error fetching course info:", error);
+    return null;
+  }
+}
+
+// Function to fetch level info from the API
+async function fetchLevelInfo(courseId, levelId) {
+  try {
+    const response = await fetch(`${levelInfoEndpoint}${courseId}/${levelId}`);
+    const levelInfo = await response.json();
+    return levelInfo;
+  } catch (error) {
+    console.error("Error fetching level info:", error);
+    return null;
+  }
+}
+
+// Function to fetch lesson info from the API
+async function fetchLessonInfo(courseId, levelId, lessonId) {
+  try {
+    const response = await fetch(`${lessonInfoEndpoint}${courseId}/${levelId}/${lessonId}`);
+    const lessonInfo = await response.json();
+    return lessonInfo;
+  } catch (error) {
+    console.error("Error fetching lesson info:", error);
     return null;
   }
 }
@@ -99,11 +125,45 @@ async function updateCourseInfo(courseId) {
     courseInfoContainer.innerHTML = `
       <h2>${courseInfo.courseName}</h2>
       <p><strong>Course Description:</strong> ${courseInfo.courseDescription}</p>
-      <p><strong>Course Tools:</strong> ${courseInfo.courseTools}</p>
-      <p><strong>Course Levels:</strong> ${courseInfo.courseLevels}</p>
+      <p><strong>Course Tools:</strong></p>
+      <ul>${courseInfo.courseTools.map(tool => `<li>${tool}</li>`).join('')}</ul>
+      <p><strong>Course Levels:</strong></p>
+      <ul>${courseInfo.courseLevels.map(level => `<li>${level}</li>`).join('')}</ul>
     `;
   } else {
     console.error("Failed to update course info");
+  }
+}
+
+// Function to update level info
+async function updateLevelInfo(courseId, levelId) {
+  const levelInfo = await fetchLevelInfo(courseId, levelId);
+  if (levelInfo) {
+    const levelInfoContainer = document.getElementById("levelInfoContainer");
+    levelInfoContainer.innerHTML = `
+      <h2>${levelInfo.levelName}</h2>
+      <p><strong>Level Description:</strong> ${levelInfo.levelDescription}</p>
+      <p><strong>Level Objectives:</strong></p>
+      <ul>${levelInfo.levelObjectives.map(obj => `<li>${obj}</li>`).join('')}</ul>
+    `;
+  } else {
+    console.error("Failed to update level info");
+  }
+}
+
+// Function to update lesson info
+async function updateLessonInfo(courseId, levelId, lessonId) {
+  const lessonInfo = await fetchLessonInfo(courseId, levelId, lessonId);
+  if (lessonInfo) {
+    const lessonInfoContainer = document.getElementById("lessonInfoContainer");
+    lessonInfoContainer.innerHTML = `
+      <h2>${lessonInfo.lessonName}</h2>
+      <p><strong>Lesson Description:</strong> ${lessonInfo.lessonDescription}</p>
+      <p><strong>Lesson Materials:</strong></p>
+      <ul>${lessonInfo.lessonMaterials.map(mat => `<li>${mat}</li>`).join('')}</ul>
+    `;
+  } else {
+    console.error("Failed to update lesson info");
   }
 }
 
@@ -159,18 +219,22 @@ async function handleLevelChange() {
     lessonSelect.disabled = false;
     await populateLessons(selectedCourseId, selectedLevelId);
     levelInfoButton.classList.add("active");
+    updateLevelInfo(selectedCourseId, selectedLevelId); // Fetch and display level info
   } else {
     levelInfoButton.classList.remove("active");
   }
 }
 
 // Function to handle Lesson change
-function handleLessonChange() {
+async function handleLessonChange() {
+  const selectedCourseId = document.getElementById("course").value;
+  const selectedLevelId = document.getElementById("level").value;
   const selectedLessonId = document.getElementById("lessonName").value;
   const lessonInfoButton = document.getElementById("lessonInfoButton");
 
   if (selectedLessonId) {
     lessonInfoButton.classList.add("active");
+    updateLessonInfo(selectedCourseId, selectedLevelId, selectedLessonId); // Fetch and display lesson info
   } else {
     lessonInfoButton.classList.remove("active");
   }
@@ -184,29 +248,34 @@ async function showCourseInfo() {
     document.getElementById("courseInfo").style.display = "block";
     document.getElementById("levelInfo").style.display = "none";
     document.getElementById("lessonInfo").style.display = "none";
-  }
+    updateCourseInfo(selectedCourseId); // Fetch and display course info
+}
 }
 
 // Function to show Level Info
 async function showLevelInfo() {
-  const selectedLevelId = document.getElementById("level").value;
-  if (selectedLevelId) {
-    document.querySelector(".right-column").style.display = "block";
-    document.getElementById("levelInfo").style.display = "block";
-    document.getElementById("courseInfo").style.display = "none";
-    document.getElementById("lessonInfo").style.display = "none";
-  }
+const selectedLevelId = document.getElementById("level").value;
+if (selectedLevelId) {
+  document.querySelector(".right-column").style.display = "block";
+  document.getElementById("levelInfo").style.display = "block";
+  document.getElementById("courseInfo").style.display = "none";
+  document.getElementById("lessonInfo").style.display = "none";
+  updateLevelInfo(selectedCourseId, selectedLevelId); // Fetch and display level info
+}
 }
 
 // Function to show Lesson Info
 async function showLessonInfo() {
-  const selectedLessonId = document.getElementById("lessonName").value;
-  if (selectedLessonId) {
-    document.querySelector(".right-column").style.display = "block";
-    document.getElementById("lessonInfo").style.display = "block";
-    document.getElementById("courseInfo").style.display = "none";
-    document.getElementById("levelInfo").style.display = "none";
-  }
+const selectedCourseId = document.getElementById("course").value;
+const selectedLevelId = document.getElementById("level").value;
+const selectedLessonId = document.getElementById("lessonName").value;
+if (selectedLessonId) {
+  document.querySelector(".right-column").style.display = "block";
+  document.getElementById("lessonInfo").style.display = "block";
+  document.getElementById("courseInfo").style.display = "none";
+  document.getElementById("levelInfo").style.display = "none";
+  updateLessonInfo(selectedCourseId, selectedLevelId, selectedLessonId); // Fetch and display lesson info
+}
 }
 
 // Event listeners for dropdown changes
@@ -216,26 +285,26 @@ document.getElementById("lessonName").addEventListener("change", handleLessonCha
 
 // Function to show/hide sections based on selected create type
 document.getElementById("createType").addEventListener("change", function() {
-  var selectedValue = this.value;
-  var sections = document.querySelectorAll(".hidden");
-  sections.forEach(section => section.style.display = "none");
-  if (selectedValue === "concept") {
-    document.getElementById("conceptSection").style.display = "block";
-    showGenerateButton("conceptSection");
-  } else if (selectedValue === "project") {
-    document.getElementById("projectSection").style.display = "block";
-    showGenerateButton("projectSection");
-  } else if (selectedValue === "quiz") {
-    document.getElementById("quizSection").style.display = "block";
-    showGenerateButton("quizSection");
-  } else if (selectedValue === "activity") {
-    document.getElementById("activitySection").style.display = "block";
-    showGenerateButton("activitySection");
-  }
+var selectedValue = this.value;
+var sections = document.querySelectorAll(".hidden");
+sections.forEach(section => section.style.display = "none");
+if (selectedValue === "concept") {
+  document.getElementById("conceptSection").style.display = "block";
+  showGenerateButton("conceptSection");
+} else if (selectedValue === "project") {
+  document.getElementById("projectSection").style.display = "block";
+  showGenerateButton("projectSection");
+} else if (selectedValue === "quiz") {
+  document.getElementById("quizSection").style.display = "block";
+  showGenerateButton("quizSection");
+} else if (selectedValue === "activity") {
+  document.getElementById("activitySection").style.display = "block";
+  showGenerateButton("activitySection");
+}
 });
 
 // Function to show/hide generate button
 function showGenerateButton(sectionId) {
-  document.getElementById(sectionId).querySelector("button").style.display = "block";
+document.getElementById(sectionId).querySelector("button").style.display = "block";
 }
 
