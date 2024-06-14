@@ -1,246 +1,241 @@
-const services_frontend = {
-    getCourses: async () => {
-        const response = await axios.get('http://localhost:3000/api/courses');
-        console.log(response.data);
-        return response.data;
-    },
-    getLevels: async (courseId) => {
-        const response = await axios.get(`http://localhost:3000/api/levels/${courseId}`);
-        console.log(response.data);
-        return response.data;
-    },
-    getLessons: async (courseId, levelId) => {
-        const response = await axios.get(`http://localhost:3000/api/lessons/${courseId}/${levelId}`);
-        console.log(response.data);
-        return response.data;
-    },
-    createSummary: async (user, inputs) => {
-        const body = {
-            inputs: inputs,
-            user: user,
-        };
-        const response = await fetch("http://localhost:3000/summary", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
-        const answer = await response.json();
-        return answer;
-    }
+// Endpoint API
+const coursesEndpoint = "http://localhost:3000/api/courses";
+const levelsEndpoint = "http://localhost:3000/api/levels/";
+const lessonsEndpoint = "http://localhost:3000/api/lessons/";
+const courseInfoEndpoint = "http://localhost:3000/api/courses/id/";
+
+// Function to fetch courses from the API
+async function fetchCourses() {
+  try {
+    const response = await fetch(coursesEndpoint);
+    const courses = await response.json();
+    return courses;
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    return [];
+  }
+}
+
+// Function to fetch levels from the API
+async function fetchLevels(courseId) {
+  try {
+    const response = await fetch(`${levelsEndpoint}${courseId}`);
+    const levels = await response.json();
+    return levels;
+  } catch (error) {
+    console.error("Error fetching levels:", error);
+    return [];
+  }
+}
+
+// Function to fetch lessons from the API
+async function fetchLessons(courseId, levelId) {
+  try {
+    const response = await fetch(`${lessonsEndpoint}${courseId}/${levelId}`);
+    const lessons = await response.json();
+    return lessons;
+  } catch (error) {
+    console.error("Error fetching lessons:", error);
+    return [];
+  }
+}
+
+// Function to fetch course info from the API
+async function fetchCourseInfo(courseId) {
+  try {
+    const response = await fetch(`${courseInfoEndpoint}${courseId}`);
+    const courseInfo = await response.json();
+    return courseInfo;
+  } catch (error) {
+    console.error("Error fetching course info:", error);
+    return null;
+  }
+}
+
+// Function to populate course dropdown
+async function populateCourses() {
+  const courses = await fetchCourses();
+  const courseSelect = document.getElementById("course");
+  courseSelect.innerHTML = '<option value="" disabled selected>Select Course</option>';
+  courses.forEach(course => {
+    const option = document.createElement("option");
+    option.value = course.courseId;
+    option.text = course.courseName;
+    courseSelect.add(option);
+  });
+}
+
+// Function to populate level dropdown
+async function populateLevels(courseId) {
+  const levels = await fetchLevels(courseId);
+  const levelSelect = document.getElementById("level");
+  levelSelect.innerHTML = '<option value="" disabled selected>Select Level</option>';
+  levels.forEach(level => {
+    const option = document.createElement("option");
+    option.value = level.levelId;
+    option.text = level.levelName;
+    levelSelect.add(option);
+  });
+}
+
+// Function to populate lesson dropdown
+async function populateLessons(courseId, levelId) {
+  const lessons = await fetchLessons(courseId, levelId);
+  const lessonSelect = document.getElementById("lessonName");
+  lessonSelect.innerHTML = '<option value="" disabled selected>Select Lesson</option>';
+  lessons.forEach(lesson => {
+    const option = document.createElement("option");
+    option.value = lesson.lessonId;
+    option.text = lesson.lessonName;
+    lessonSelect.add(option);
+  });
+}
+
+// Function to update course info
+async function updateCourseInfo(courseId) {
+  const courseInfo = await fetchCourseInfo(courseId);
+  if (courseInfo) {
+    const courseInfoContainer = document.getElementById("courseInfoContainer");
+    courseInfoContainer.innerHTML = `
+      <h2>${courseInfo.courseName}</h2>
+      <p><strong>Course Description:</strong> ${courseInfo.courseDescription}</p>
+      <p><strong>Course Tools:</strong> ${courseInfo.courseTools}</p>
+      <p><strong>Course Levels:</strong> ${courseInfo.courseLevels}</p>
+    `;
+  } else {
+    console.error("Failed to update course info");
+  }
+}
+
+// Call populateCourses on page load
+window.onload = () => {
+  populateCourses();
 };
 
+// Function to handle Course change
+async function handleCourseChange() {
+  const selectedCourseId = document.getElementById("course").value;
+  const courseInfoButton = document.getElementById("courseInfoButton");
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const coursesSelect = document.getElementById('courses');
-    const levelsSelect = document.getElementById('levels');
-    const lessonsSelect = document.getElementById('lessons');
-    const createSelect = document.getElementById('create');
-    const createButton = document.getElementById('createBtn');
-    const createSummary = document.getElementById('createSummary');
+  const levelSelect = document.getElementById("level");
+  const lessonSelect = document.getElementById("lessonName");
+  const levelInfoButton = document.getElementById("levelInfoButton");
+  const lessonInfoButton = document.getElementById("lessonInfoButton");
 
+  // Reset level and lesson selections and buttons
+  levelSelect.disabled = true;
+  levelSelect.innerHTML = '<option value="" disabled selected>Select Level</option>';
+  lessonSelect.disabled = true;
+  lessonSelect.innerHTML = '<option value="" disabled selected>Select Lesson</option>';
 
-    // Load courses on page load
-    try {
-        const courses = await services_frontend.getCourses();
-        courses.forEach(course => {
-            const option = document.createElement('option');
-            option.value = course.courseId;
-            option.textContent = course.courseName;
-            coursesSelect.appendChild(option);
-        });
-    } catch (error) {
-        console.error('Error loading courses:', error);
-    }
+  // Reset info buttons
+  levelInfoButton.classList.remove("active");
+  lessonInfoButton.classList.remove("active");
 
-    // Handle course selection
-    coursesSelect.addEventListener('change', async (event) => {
-        const courseId = event.target.value;
-        levelsSelect.innerHTML = '<option value="">Select a level</option>';
-        lessonsSelect.innerHTML = '<option value="">Select a lesson</option>';
-        levelsSelect.disabled = true;
-        lessonsSelect.disabled = true;
+  if (selectedCourseId) {
+    levelSelect.disabled = false;
+    await populateLevels(selectedCourseId);
+    courseInfoButton.classList.add("active");
+    updateCourseInfo(selectedCourseId); // Fetch and display course info
+  } else {
+    courseInfoButton.classList.remove("active");
+  }
+}
 
-        if (courseId) {
-            try {
-                const levels = await services_frontend.getLevels(courseId);
-                levels.forEach(level => {
-                    const option = document.createElement('option');
-                    option.value = level.levelId;
-                    option.textContent = level.levelName;
-                    levelsSelect.appendChild(option);
-                });
-                levelsSelect.disabled = false;
-            } catch (error) {
-                console.error('Error loading levels:', error);
-            }
-        }
-    });
+// Function to handle Level change
+async function handleLevelChange() {
+  const selectedCourseId = document.getElementById("course").value;
+  const selectedLevelId = document.getElementById("level").value;
+  const levelInfoButton = document.getElementById("levelInfoButton");
+  const lessonSelect = document.getElementById("lessonName");
+  const lessonInfoButton = document.getElementById("lessonInfoButton");
 
-    // Handle level selection
-    levelsSelect.addEventListener('change', async (event) => {
-        const courseId = coursesSelect.value;
-        const levelId = event.target.value;
-        lessonsSelect.innerHTML = '<option value="">Select a lesson</option>';
-        lessonsSelect.disabled = true;
+  // Reset lesson selection and button
+  lessonSelect.disabled = true;
+  lessonSelect.innerHTML = '<option value="" disabled selected>Select Lesson</option>';
+  lessonInfoButton.classList.remove("active");
 
-        if (courseId && levelId) {
-            try {
-                const lessons = await services_frontend.getLessons(courseId, levelId);
-                lessons.forEach(lesson => {
-                    const option = document.createElement('option');
-                    option.value = lesson.lessonId;
-                    option.textContent = lesson.lessonName;
-                    lessonsSelect.appendChild(option);
-                });
-                lessonsSelect.disabled = false;
-            } catch (error) {
-                console.error('Error loading lessons:', error);
-            }
-        }else{
-            document.getElementById('createSection').style.display = 'none';
-        }
-    });
+  if (selectedLevelId) {
+    lessonSelect.disabled = false;
+    await populateLessons(selectedCourseId, selectedLevelId);
+    levelInfoButton.classList.add("active");
+  } else {
+    levelInfoButton.classList.remove("active");
+  }
+}
 
-    lessonsSelect.addEventListener('change', (event) => {
-        const lessonId = event.target.value;
-        if (lessonId) document.getElementById('createSection').style.display = 'flex';
-        else document.getElementById('createSection').style.display = 'none';
-    });
+// Function to handle Lesson change
+function handleLessonChange() {
+  const selectedLessonId = document.getElementById("lessonName").value;
+  const lessonInfoButton = document.getElementById("lessonInfoButton");
 
-    createButton.addEventListener('click', async () => {
-        const create = createSelect.value
-        if (!create) return alert('Please select a create');
-        const user = 'vanmerr020403@gmail.com';
-        const inputs = {
-            "LessonProgress": lessonsSelect.value
-        }
-        if(create === 'summary'){
-            createSummary.style.display = 'block';
-            createSummary.textContent = "Creating...........";
-            const answer = await services_frontend.createSummary(user, inputs);
-            console.log(answer);
-            createLessonElements(answer.data.outputs.result);
-        };
-    
-    });
+  if (selectedLessonId) {
+    lessonInfoButton.classList.add("active");
+  } else {
+    lessonInfoButton.classList.remove("active");
+  }
+}
 
+// Function to show Course Info
+async function showCourseInfo() {
+  const selectedCourseId = document.getElementById("course").value;
+  if (selectedCourseId) {
+    document.querySelector(".right-column").style.display = "block";
+    document.getElementById("courseInfo").style.display = "block";
+    document.getElementById("levelInfo").style.display = "none";
+    document.getElementById("lessonInfo").style.display = "none";
+  }
+}
+
+// Function to show Level Info
+async function showLevelInfo() {
+  const selectedLevelId = document.getElementById("level").value;
+  if (selectedLevelId) {
+    document.querySelector(".right-column").style.display = "block";
+    document.getElementById("levelInfo").style.display = "block";
+    document.getElementById("courseInfo").style.display = "none";
+    document.getElementById("lessonInfo").style.display = "none";
+  }
+}
+
+// Function to show Lesson Info
+async function showLessonInfo() {
+  const selectedLessonId = document.getElementById("lessonName").value;
+  if (selectedLessonId) {
+    document.querySelector(".right-column").style.display = "block";
+    document.getElementById("lessonInfo").style.display = "block";
+    document.getElementById("courseInfo").style.display = "none";
+    document.getElementById("levelInfo").style.display = "none";
+  }
+}
+
+// Event listeners for dropdown changes
+document.getElementById("course").addEventListener("change", handleCourseChange);
+document.getElementById("level").addEventListener("change", handleLevelChange);
+document.getElementById("lessonName").addEventListener("change", handleLessonChange);
+
+// Function to show/hide sections based on selected create type
+document.getElementById("createType").addEventListener("change", function() {
+  var selectedValue = this.value;
+  var sections = document.querySelectorAll(".hidden");
+  sections.forEach(section => section.style.display = "none");
+  if (selectedValue === "concept") {
+    document.getElementById("conceptSection").style.display = "block";
+    showGenerateButton("conceptSection");
+  } else if (selectedValue === "project") {
+    document.getElementById("projectSection").style.display = "block";
+    showGenerateButton("projectSection");
+  } else if (selectedValue === "quiz") {
+    document.getElementById("quizSection").style.display = "block";
+    showGenerateButton("quizSection");
+  } else if (selectedValue === "activity") {
+    document.getElementById("activitySection").style.display = "block";
+    showGenerateButton("activitySection");
+  }
 });
 
-function createLessonElements(lessonData) {
-    const createSummary = document.getElementById('createSummary');
-    createSummary.innerHTML = ''; // Clear previous content
-
-    // Create elements for each part of the lesson
-    const title = document.createElement('h2');
-    title.textContent = `Học phần: ${lessonData["Học phần"]} - Bài: ${lessonData["Bài"]}`;
-    createSummary.appendChild(title);
-
-    const projectTitle = document.createElement('h3');
-    projectTitle.textContent = `Tên dự án: ${lessonData["Tên dự án"]}`;
-    createSummary.appendChild(projectTitle);
-
-    const description = document.createElement('p');
-    description.textContent = `Mô tả dự án: ${lessonData["Mô tả dự án"]}`;
-    createSummary.appendChild(description);
-
-    const topic = document.createElement('p');
-    topic.textContent = `Chủ đề: ${lessonData["Chủ đề"]}`;
-    createSummary.appendChild(topic);
-
-    const newKnowledgeTitle = document.createElement('h4');
-    newKnowledgeTitle.textContent = 'Kiến thức mới:';
-    createSummary.appendChild(newKnowledgeTitle);
-
-    const newKnowledgeList = document.createElement('ul');
-    lessonData["Kiến thức mới"].forEach(knowledge => {
-        const listItem = document.createElement('li');
-        listItem.textContent = knowledge;
-        newKnowledgeList.appendChild(listItem);
-    });
-    createSummary.appendChild(newKnowledgeList);
-
-    const steamTitle = document.createElement('h4');
-    steamTitle.textContent = 'Kiến thức theo STEAM:';
-    createSummary.appendChild(steamTitle);
-
-    const steamSections = lessonData["Kiến thức theo STEAM"];
-    for (const section in steamSections) {
-        const sectionTitle = document.createElement('h5');
-        sectionTitle.textContent = section;
-        createSummary.appendChild(sectionTitle);
-
-        const sectionList = document.createElement('ul');
-        for (const item in steamSections[section]) {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${item}: ${steamSections[section][item]}`;
-            sectionList.appendChild(listItem);
-        }
-        createSummary.appendChild(sectionList);
-    }
-
-    const stepsTitle = document.createElement('h4');
-    stepsTitle.textContent = 'Chi tiết các bước:';
-    createSummary.appendChild(stepsTitle);
-
-    const steps = lessonData["Chi tiết các bước"];
-    for (const step in steps) {
-        const stepContainer = document.createElement('div');
-        stepContainer.classList.add('step-container');
-
-        const stepTitle = document.createElement('h5');
-        stepTitle.textContent = `${step}: ${steps[step]["Nội dung"]}`;
-        stepContainer.appendChild(stepTitle);
-
-        const stepDescription = document.createElement('p');
-        stepDescription.textContent = steps[step]["Mô tả"];
-        stepContainer.appendChild(stepDescription);
-
-        const stepTime = document.createElement('p');
-        stepTime.textContent = `Thời gian: ${steps[step]["Thời gian"]}`;
-        stepContainer.appendChild(stepTime);
-
-        if (steps[step]["Kiến thức mới"].length > 0) {
-            const stepNewKnowledgeTitle = document.createElement('h6');
-            stepNewKnowledgeTitle.textContent = 'Kiến thức mới:';
-            stepContainer.appendChild(stepNewKnowledgeTitle);
-
-            const stepNewKnowledgeList = document.createElement('ul');
-            steps[step]["Kiến thức mới"].forEach(knowledge => {
-                const listItem = document.createElement('li');
-                listItem.textContent = knowledge;
-                stepNewKnowledgeList.appendChild(listItem);
-            });
-            stepContainer.appendChild(stepNewKnowledgeList);
-        }
-
-        if (steps[step]["Kiến thức cũ"].length > 0) {
-            const stepOldKnowledgeTitle = document.createElement('h6');
-            stepOldKnowledgeTitle.textContent = 'Kiến thức cũ:';
-            stepContainer.appendChild(stepOldKnowledgeTitle);
-
-            const stepOldKnowledgeList = document.createElement('ul');
-            steps[step]["Kiến thức cũ"].forEach(knowledge => {
-                const listItem = document.createElement('li');
-                listItem.textContent = knowledge;
-                stepOldKnowledgeList.appendChild(listItem);
-            });
-            stepContainer.appendChild(stepOldKnowledgeList);
-        }
-
-        createSummary.appendChild(stepContainer);
-    }
-
-    const homeworkTitle = document.createElement('h4');
-    homeworkTitle.textContent = 'Bài tập tự luyện:';
-    createSummary.appendChild(homeworkTitle);
-
-    const homeworkList = document.createElement('ul');
-    for (const homework in lessonData["Bài tập tự luyện"]) {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${homework}: ${lessonData["Bài tập tự luyện"][homework]}`;
-        homeworkList.appendChild(listItem);
-    }
-    createSummary.appendChild(homeworkList);
+// Function to show/hide generate button
+function showGenerateButton(sectionId) {
+  document.getElementById(sectionId).querySelector("button").style.display = "block";
 }
+

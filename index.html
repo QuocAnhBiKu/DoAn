@@ -1,43 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Selector</title>
-    <link rel="stylesheet" href="./index.css">
+<title>Course Creator</title>
+<link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <div class="container">
-        <div>
-            <label for="courses">Courses:</label>
-            <select id="courses">
-                <option value="">Select a course</option>
-            </select>
-        </div>
-        <div>
-            <label for="levels">Levels:</label>
-            <select id="levels" disabled>
-                <option value="">Select a level</option>
-            </select>
-        </div>
-        <div>
-            <label for="lessons">Lessons:</label>
-            <select id="lessons" disabled>
-                <option value="">Select a lesson</option>
-            </select>
-        </div>
-        <div id="createSection" style="display: none;">
-          <label for="create">Create:</label>
-          <select id="create">
-              <option value="">Select a create</option>
-              <option value="summary">Summary</option>
-              <option value="quiz">Quiz</option>
-          </select>
-          <button id="createBtn">Create</button>
-        </div>
-    </div>
-    <div id="createSummary" style="display: none;"></div>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="./index.js"></script>
+
+<div class="left-column">
+  <h1>Course Creator</h1>
+
+  <label for="course">Course:</label>
+  <select id="course" onchange="handleCourseChange()">
+    <option value="" disabled selected>Select Course</option>
+  </select>
+  <button class="info-button" id="courseInfoButton" onclick="showCourseInfo()">More Info</button><br><br>
+
+  <div id="levelSection">
+    <label for="level">Level:</label>
+    <select id="level" onchange="handleLevelChange()" disabled>
+      <option value="" disabled selected>Select Level</option>
+    </select>
+    <button class="info-button" id="levelInfoButton" onclick="showLevelInfo()">More Info</button><br><br>
+  </div>
+
+  <div id="lessonSection">
+    <label for="lessonName">Lesson Name:</label>
+    <select id="lessonName" onchange="handleLessonChange()" disabled>
+      <option value="" disabled selected>Select Lesson</option>
+    </select>
+    <button class="info-button" id="lessonInfoButton" onclick="showLessonInfo()">More Info</button><br><br>
+  </div>
+
+  <h2>Create:</h2>
+
+  <select id="createType">
+    <option value="">Select Item</option>
+    <option value="concept">Concept Definition</option>
+    <option value="project">Project Instruction</option>
+    <option value="quiz">Quiz</option>
+    <option value="activity">Activity</option>
+  </select><br><br>
+
+  <div id="conceptSection" class="hidden">
+    <label for="conceptDefinition">Concept Definition:</label>
+    <input type="text" id="conceptDefinition" name="conceptDefinition">
+    <button onclick="generateConcept()">Generate</button>
+  </div>
+
+  <div id="projectSection" class="hidden">
+    <label for="projectInstruction">Project Instruction:</label>
+    <input type="text" id="projectInstruction" name="projectInstruction">
+    <button onclick="generateProject()">Generate</button>
+  </div>
+
+  <div id="quizSection" class="hidden">
+    <label for="quizType">Quiz Type:</label>
+    <input type="text" id="quizType" name="quizType"><br>
+    <label for="quizNum">Quiz Number:</label>
+    <input type="text" id="quizNum" name="quizNum"><br>
+    <label for="quizHardness">Hardness:</label>
+    <input type="text" id="quizHardness" name="quizHardness">
+    <button onclick="generateQuiz()">Generate</button>
+  </div>
+
+  <div id="activitySection" class="hidden">
+    <label for="activityNum">Activity Number:</label>
+    <input type="text" id="activityNum" name="activityNum"><br>
+    <label for="activityStrategies">Activity Strategies:</label>
+    <textarea id="activityStrategies" name="activityStrategies" rows="4" cols="50"></textarea>
+    <button onclick="generateActivity()">Generate</button>
+  </div>
+</div>
+
+<div class="right-column">
+  <div id="courseInfo" class="hidden">
+    <h3>Course Info</h3>
+    <div id="courseInfoContainer"></div>
+  </div>
+  <div id="levelInfo" class="hidden">
+    <h3>Level Info</h3>
+    <div id="levelInfoContainer"></div>
+  </div>
+  <div id="lessonInfo" class="hidden">
+    <h3>Lesson Info</h3>
+    <div id="lessonInfoContainer"></div>
+  </div>
+</div>
+
+<script src="index.js"></script>
+
 </body>
 </html>

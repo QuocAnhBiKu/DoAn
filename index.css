@@ -1,69 +1,69 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
+    font-family: sans-serif;
+    display: flex;
+}
+  
+.left-column {
+    width: 40%;
     padding: 20px;
-    background-color: #f0f0f0;
 }
-
-.container {
-    max-width: 500px;
-    margin: 0 auto;
+  
+.right-column {
+    width: 60%;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    display: none; /* Hide right column initially */
 }
-
-label {
-    display: block;
-    margin-top: 20px;
-    font-weight: bold;
-}
-
+  
 select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
+    width: 200px;
+    padding: 8px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    font-size: 16px;
+    border-radius: 4px;
 }
-
-
+  
+select:disabled {
+    background-color: #eee;
+    cursor: not-allowed;
+}
+  
 button {
-    display: inline-block;
-    padding: 10px 20px;
-    color: #fff;
-    background-color: #007bff;
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    display: none;
 }
-
-button:hover {
-    background-color: #0056b3;
+  
+.hidden {
+    display: none;
 }
-
-#createSummary {
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-}
-
-.project {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    padding: 15px;
+  
+.info-button {
+    padding: 8px 12px;
+    background-color: #ccc;
+    border: none;
     border-radius: 4px;
-    margin-bottom: 10px;
+    cursor: pointer;
+    margin-left: 10px;
+    display: inline-block;
+    opacity: 0.5; /* Make button semi-transparent when disabled */
+    pointer-events: none; /* Prevent clicking when disabled */
 }
-
-.project h3 {
+  
+.info-button.active {
+    opacity: 1; /* Make button opaque when enabled */
+    pointer-events: auto; /* Allow clicking when enabled */
+}
+  
+.info-section {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    display: none; /* Hide info sections initially */
+}
+  
+.info-section h3 {
     margin-top: 0;
-}
-
-.project p {
-    margin: 5px 0;
 }
