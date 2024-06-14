@@ -41,14 +41,47 @@ async function getAllData() {
             conceptSkill: lessonDoc.data().conceptSkill || []
           },
           lessonMaterials: {
-            lessonPlanId: lessonDoc.data().lessonPlanId,
-            slideId: lessonDoc.data().slideId,
-            summaryId: lessonDoc.data().summaryId,
-            quizId: lessonDoc.data().quizId,
-            videoId: lessonDoc.data().videoId
+            lessonPlan: null,
+            slide: null,
+            summary: null,
+            quiz: null,
+            video: null
           },
           lessonProject: null
         };
+          // Lấy thông tin Material từ "lessonPlanId", "slideId",...
+          const materialIds = ['lessonPlanId', 'slideId', 'summaryId', 'quizId', 'videoId'];
+          for (const materialIdKey of materialIds) {
+            const materialId = lessonDoc.data()[materialIdKey]; // Lấy ID từ lessonData
+            if (materialId) {
+              const materialDocRef = doc(db, 'Materials', materialId);
+              const materialDoc = await getDoc(materialDocRef);
+  
+              if (materialDoc.exists()) {
+                const materialData = materialDoc.data();
+  
+                // Gán thông tin của material vào object tương ứng
+                switch (materialIdKey) {
+                  case 'lessonPlanId':
+                    lessonData.lessonMaterials.lessonPlan = materialData;
+                    break;
+                  case 'slideId':
+                    lessonData.lessonMaterials.slide = materialData;
+                    break;
+                  case 'summaryId':
+                    lessonData.lessonMaterials.summary = materialData;
+                    break;
+                  case 'quizId':
+                    lessonData.lessonMaterials.quiz = materialData;
+                    break;
+                  case 'videoId':
+                    lessonData.lessonMaterials.video = materialData;
+                    break;
+                }
+              }
+            }
+          }
+  
 
         if (lessonDoc.data().projectId) {
           const projectDoc = await getDoc(doc(db, 'Projects', lessonDoc.data().projectId));
