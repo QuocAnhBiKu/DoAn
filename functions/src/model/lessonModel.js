@@ -1,6 +1,8 @@
 class Lesson {
-  constructor(doc) {
+  constructor(doc,courseId,levelId) {
     this.lessonId = doc.id;
+    this.courseId = courseId;
+    this.levelId = levelId;
     this.lessonName = doc.data().lessonName;
     this.lessonNumber = doc.data().lessonNumber;
     this.lessonImage = doc.data().lessonImage;
@@ -14,6 +16,7 @@ class Lesson {
       conceptEngineering: doc.data().conceptEngineering || [],
       conceptArt: doc.data().conceptArt || [],
       conceptMath: doc.data().conceptMath || [],
+      conceptSkill: doc.data().conceptSkill || [],
     };
     this.lessonMaterials = {
       lessonPlanId: doc.data().lessonPlanId,

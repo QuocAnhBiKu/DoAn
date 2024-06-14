@@ -1,8 +1,27 @@
 const { db } = require('../configs/firebaseConfig');
 const { collection, getDocs, doc, getDoc, where, query } = require('firebase/firestore');
 const Level = require('../model/levelModel');
+const lessonRepository = require('./lessonRepository');
 
 class LevelRepository {
+    async getAllLevelsForCourseWithDetails(courseId) {
+        const levelsData = [];
+        const levelsSnapshot = await getDocs(collection(db, 'Courses', courseId, 'Levels'));
+    
+        for (const doc of levelsSnapshot.docs) {
+          const level = new Level(
+            doc.id,
+            courseId,
+            doc.data().levelName,
+            doc.data().levelDescription,
+            doc.data().levelTools || []
+          );
+          level.lessons = await lessonRepository.getAllLessonsForLevelWithDetails(courseId, doc.id);
+          levelsData.push(level);
+        }
+    
+        return levelsData;
+      }
   async getAllLevelsForCourse(courseId) {
     const levelsData = [];
     const levelsSnapshot = await getDocs(collection(db, 'Courses', courseId, 'Levels'));
@@ -10,10 +29,11 @@ class LevelRepository {
     levelsSnapshot.forEach(doc => {
       const level = new Level(
         doc.id,
+        courseId,
         doc.data().levelName,
         doc.data().levelDescription,
         doc.data().levelTools,
-        doc.data().levelLessons
+        doc.data().levelLessons || {}
       );
       levelsData.push(level);
     });
@@ -29,10 +49,11 @@ class LevelRepository {
       const levelData = docSnap.data();
       return new Level(
         docSnap.id,
+        courseId,
         levelData.levelName,
         levelData.levelDescription,
         levelData.levelTools,
-        levelData.levelLessons
+        levelData.levelLessons || {}
       );
     } else {
       return null;
@@ -48,10 +69,11 @@ class LevelRepository {
       const levelData = doc.data();
       return new Level(
         doc.id,
+        courseId,
         levelData.levelName,
         levelData.levelDescription,
         levelData.levelTools,
-        levelData.levelLessons
+        levelData.levelLessons || {}
       );
     } else {
       return null;
