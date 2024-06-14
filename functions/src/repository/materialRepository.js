@@ -25,7 +25,7 @@ async function findByMaterialId(materialId) {
     const materialDoc = await getDoc(doc(db, 'Materials', materialId));
 
     if (!materialDoc.exists()) {
-        throw new Error('Material not found');
+        return null; // Trả về null thay vì ném lỗi
     }
 
     const materialData = materialDoc.data();
