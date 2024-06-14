@@ -1,17 +1,19 @@
-const { db } = require('../configs/firebaseConfig');
-const { collection, getDocs, doc, getDoc } = require('firebase/firestore');
+const materialRepository = require('../repository/materialRepository');
 
 async function getAllMaterials() {
-    const projectsData = [];
-    const projectsSnapshot = await getDocs(collection(db, 'Materials'));
-  
-    projectsSnapshot.forEach(doc => {
-      projectsData.push({ id: doc.id, ...doc.data() });
-    });
-  
-    return projectsData;
-  }
-  
-  module.exports = {
+    return await materialRepository.getAllMaterials();
+}
+
+async function findByMaterialId(materialId) {
+    return await materialRepository.findByMaterialId(materialId);
+}
+
+async function findByMaterialName(materialName) {
+    return await materialRepository.findByMaterialName(materialName);
+}
+
+module.exports = {
     getAllMaterials,
-  };
+    findByMaterialId,
+    findByMaterialName,
+};

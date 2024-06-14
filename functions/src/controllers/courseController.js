@@ -26,7 +26,7 @@ async function findByCourseId(req, res) {
 
 async function findByCourseName(req, res) {
   try {
-    const courseName = req.params.courseName; // Update to use courseName
+    const courseName = req.params.courseName;
     const courses = await courseService.findByCourseName(courseName);
     res.json(courses);
   } catch (error) {

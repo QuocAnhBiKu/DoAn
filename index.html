@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details</title>
+    <style>
+        select, table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Course Details</h2>
+    <label for="course-select">Select a course:</label>
+    <select id="course-select" onchange="fetchCourseDetails()">
+        <!-- Options will be populated dynamically -->
+    </select>
+
+    <table id="course-details">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Tools</th>
+            </tr>
+        </thead>
+        <tbody id="course-details-body">
+            <tr>
+                <td colspan="4">Select a course to view details.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchCourses() {
+            try {
+                const response = await fetch('http://localhost:3000/api/courses');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const courses = await response.json();
+                populateCourseSelect(courses);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        async function fetchCourseDetails() {
+            const courseId = document.getElementById('course-select').value;
+            try {
+                const response = await fetch(`http://localhost:3000/api/courses/id/${courseId}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const course = await response.json();
+                displayCourseDetails(course);
+            } catch (error) {
+                console.error('Error fetching course details:', error);
+            }
+        }
+
+        function populateCourseSelect(courses) {
+            const selectElement = document.getElementById('course-select');
+
+            courses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.courseId;
+                option.textContent = course.courseName;
+                selectElement.appendChild(option);
+            });
+        }
+
+        function displayCourseDetails(course) {
+            const tableBody = document.getElementById('course-details-body');
+            tableBody.innerHTML = `
+                <tr>
+                    <td>${course.courseId}</td>
+                    <td>${course.courseName}</td>
+                    <td>${course.courseDescription}</td>
+                    <td>${course.courseTools.join(', ')}</td>
+                </tr>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchCourses();
+        });
+    </script>
+</body>
+</html>

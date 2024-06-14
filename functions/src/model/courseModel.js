@@ -1,4 +1,3 @@
-// models/Course.js
 class Course {
   constructor(courseId, courseName, courseDescription, courseTools = []) {
     this.courseId = courseId;
