@@ -3,99 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Details</title>
-    <style>
-        select, table {
-            width: 100%;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <title>Course Selector</title>
+    <link rel="stylesheet" href="./index.css">
 </head>
 <body>
-    <h2>Course Details</h2>
-    <label for="course-select">Select a course:</label>
-    <select id="course-select" onchange="fetchCourseDetails()">
-        <!-- Options will be populated dynamically -->
-    </select>
-
-    <table id="course-details">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Tools</th>
-            </tr>
-        </thead>
-        <tbody id="course-details-body">
-            <tr>
-                <td colspan="4">Select a course to view details.</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <script>
-        async function fetchCourses() {
-            try {
-                const response = await fetch('http://localhost:3000/api/courses');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const courses = await response.json();
-                populateCourseSelect(courses);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        }
-
-        async function fetchCourseDetails() {
-            const courseId = document.getElementById('course-select').value;
-            try {
-                const response = await fetch(`http://localhost:3000/api/courses/id/${courseId}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const course = await response.json();
-                displayCourseDetails(course);
-            } catch (error) {
-                console.error('Error fetching course details:', error);
-            }
-        }
-
-        function populateCourseSelect(courses) {
-            const selectElement = document.getElementById('course-select');
-
-            courses.forEach(course => {
-                const option = document.createElement('option');
-                option.value = course.courseId;
-                option.textContent = course.courseName;
-                selectElement.appendChild(option);
-            });
-        }
-
-        function displayCourseDetails(course) {
-            const tableBody = document.getElementById('course-details-body');
-            tableBody.innerHTML = `
-                <tr>
-                    <td>${course.courseId}</td>
-                    <td>${course.courseName}</td>
-                    <td>${course.courseDescription}</td>
-                    <td>${course.courseTools.join(', ')}</td>
-                </tr>
-            `;
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchCourses();
-        });
-    </script>
+    <div class="container">
+        <div>
+            <label for="courses">Courses:</label>
+            <select id="courses">
+                <option value="">Select a course</option>
+            </select>
+        </div>
+        <div>
+            <label for="levels">Levels:</label>
+            <select id="levels" disabled>
+                <option value="">Select a level</option>
+            </select>
+        </div>
+        <div>
+            <label for="lessons">Lessons:</label>
+            <select id="lessons" disabled>
+                <option value="">Select a lesson</option>
+            </select>
+        </div>
+        <div id="createSection" style="display: none;">
+          <label for="create">Create:</label>
+          <select id="create">
+              <option value="">Select a create</option>
+              <option value="summary">Summary</option>
+              <option value="quiz">Quiz</option>
+          </select>
+          <button id="createBtn">Create</button>
+        </div>
+    </div>
+    <div id="createSummary" style="display: none;"></div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="./index.js"></script>
 </body>
 </html>
