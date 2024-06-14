@@ -1,17 +1,21 @@
-const { db } = require('../configs/firebaseConfig');
-const { collection, getDocs, doc, getDoc } = require('firebase/firestore');
+// service/projectService.js
+
+const projectRepository = require('../repository/projectRepository');
 
 async function getAllProjects() {
-    const projectsData = [];
-    const projectsSnapshot = await getDocs(collection(db, 'Projects'));
-  
-    projectsSnapshot.forEach(doc => {
-      projectsData.push({ id: doc.id, ...doc.data() });
-    });
-  
-    return projectsData;
-  }
-  
-  module.exports = {
-    getAllProjects,
-  };
+  return await projectRepository.getAllProjects();
+}
+
+async function getProjectByName(projectName) {
+  return await projectRepository.getProjectByName(projectName);
+}
+
+async function getProjectById(projectId) {
+  return await projectRepository.getProjectById(projectId);
+}
+
+module.exports = {
+  getAllProjects,
+  getProjectByName,
+  getProjectById,
+};
