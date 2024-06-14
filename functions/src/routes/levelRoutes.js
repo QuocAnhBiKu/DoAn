@@ -1,9 +1,15 @@
 // routes/levelsRoutes.js
 const express = require('express');
 const router = express.Router();
-const { getAllLevelsForCourseController } = require('../controllers/levelController');
+const levelsController = require('../controllers/levelController');
 
-// Định nghĩa route để lấy danh sách các cấp độ của một khóa học cụ thể
-router.get('/:courseId', getAllLevelsForCourseController);
+// Route to get all levels for a specific course
+router.get('/:courseId', levelsController.getAllLevelsForCourseController);
+
+// Route to get level by ID for a specific course
+router.get('/:courseId/id/:levelId', levelsController.findLevelByIdController);
+
+// Route to get level by name for a specific course
+router.get('/:courseId/name/:levelName', levelsController.findLevelByNameController);
 
 module.exports = router;

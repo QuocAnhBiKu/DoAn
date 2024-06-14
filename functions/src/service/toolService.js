@@ -1,17 +1,21 @@
-const { db } = require('../configs/firebaseConfig');
-const { collection, getDocs, doc, getDoc } = require('firebase/firestore');
+// service/toolService.js
+
+const toolRepository = require('../repository/toolRepository');
 
 async function getAllTools() {
-  const toolsData = [];
-  const toolsSnapshot = await getDocs(collection(db, 'Tools'));
+  return await toolRepository.getAllTools();
+}
 
-  toolsSnapshot.forEach(doc => {
-    toolsData.push({ id: doc.id, ...doc.data() });
-  });
+async function getToolByName(toolName) {
+  return await toolRepository.getToolByName(toolName);
+}
 
-  return toolsData;
+async function getToolById(toolId) {
+  return await toolRepository.getToolById(toolId);
 }
 
 module.exports = {
   getAllTools,
+  getToolByName,
+  getToolById,
 };

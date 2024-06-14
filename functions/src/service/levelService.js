@@ -1,24 +1,19 @@
-const { db } = require('../configs/firebaseConfig');
-const { collection, getDocs } = require('firebase/firestore');
+const levelRepository = require('../repository/levelRepository');
 
-async function getAllLevelsForCourse(courseId) {
-  const levelsData = [];
+async function getAllLevelsForCourseService(courseId) {
+  return await levelRepository.getAllLevelsForCourse(courseId);
+}
 
-  const levelsSnapshot = await getDocs(collection(db, 'Courses', courseId, 'Levels'));
+async function findLevelByIdService(courseId, levelId) {
+  return await levelRepository.findLevelById(courseId, levelId);
+}
 
-  levelsSnapshot.forEach(doc => {
-    const level = {
-      levelId: doc.id,
-      levelName: doc.data().levelName,
-      levelDescription: doc.data().levelDescription,
-      levelTools: doc.data().levelTools || []
-    };
-    levelsData.push(level);
-  });
-
-  return levelsData;
+async function findLevelByNameService(courseId, levelName) {
+  return await levelRepository.findLevelByName(courseId, levelName);
 }
 
 module.exports = {
-  getAllLevelsForCourse,
+  getAllLevelsForCourseService,
+  findLevelByIdService,
+  findLevelByNameService,
 };
