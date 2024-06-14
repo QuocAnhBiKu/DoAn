@@ -1,18 +1,48 @@
-// controllers/lessonsController.js
-const lessonServie = require('../service/lessonService');
+const lessonService = require("../service/lessonService");
 
-// Lấy danh sách các bài học của một cấp độ trong một khóa học
-async function getAllLessonsForLevelController(req, res) {
+async function getAllLessons(req, res) {
   const { courseId, levelId } = req.params;
   try {
-    const lessons = await lessonServie.getAllLessonsForLevel(courseId, levelId);
+    const lessons = await lessonService.getAllLessons(courseId, levelId);
     res.json(lessons);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function findLessonById(req, res) {
+  const { courseId, levelId, lessonId } = req.params;
+  try {
+    const lesson = await lessonService.findLessonById(courseId, levelId, lessonId);
+    if (!lesson) {
+      res.status(404).json({ message: "Lesson not found" });
+    } else {
+      res.json(lesson);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function findLessonByName(req, res) {
+  const { courseId, levelId, lessonName } = req.params;
+  try {
+    const lesson = await lessonService.findLessonByName(courseId, levelId, lessonName);
+    if (!lesson) {
+      res.status(404).json({ message: "Lesson not found" });
+    } else {
+      res.json(lesson);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 
 module.exports = {
-  getAllLessonsForLevelController,
+  getAllLessons,
+  findLessonById,
+  findLessonByName,
 };

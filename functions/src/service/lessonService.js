@@ -1,46 +1,34 @@
-// models/lessonsModel.js
-const { db } = require('../configs/firebaseConfig');
-const { collection, getDocs } = require('firebase/firestore');
+const lessonRepository = require("../repository/lessonRepository");
 
-async function getAllLessonsForLevel(courseId, levelId) {
-  const lessonsData = [];
+async function getAllLessons(courseId, levelId) {
+  try {
+    const lessons = await lessonRepository.getAllLessons(courseId, levelId);
+    return lessons;
+  } catch (error) {
+    throw new Error("Failed to fetch lessons from repository");
+  }
+}
 
-  const lessonsSnapshot = await getDocs(collection(db, 'Courses', courseId, 'Levels', levelId, 'Lessons'));
+async function findLessonById(courseId, levelId, lessonId) {
+  try {
+    const lesson = await lessonRepository.findLessonById(courseId, levelId, lessonId);
+    return lesson;
+  } catch (error) {
+    throw new Error("Failed to find lesson by lessonId from repository");
+  }
+}
 
-  lessonsSnapshot.forEach(doc => {
-    const lesson = {
-      lessonId: doc.id,
-      lessonName: doc.data().lessonName,
-      lessonNumber: doc.data().lessonNumber,
-      lessonImage: doc.data().lessonImage,
-      lessonTopic: doc.data().lessonTopic,
-      lessonGoal: doc.data().lessonGoal,
-      lessonTools: doc.data().lessonTools || [],
-      lessonConcepts: {
-        conceptComputerScience: doc.data().conceptComputerScience || [],
-        conceptScience: doc.data().conceptScience || [],
-        conceptTech: doc.data().conceptTech || [],
-        conceptEngineering: doc.data().conceptEngineering || [],
-        conceptArt: doc.data().conceptArt || [],
-        conceptMath: doc.data().conceptMath || []
-      },
-      lessonMaterials: {
-        lessonPlanId: doc.data().lessonPlanId,
-        slideId: doc.data().slideId,
-        summaryId: doc.data().summaryId,
-        quizId: doc.data().quizId,
-        videoId: doc.data().videoId
-      },
-      lessonProject: {
-        projectId: doc.data().projectId || null
-      }
-    };
-    lessonsData.push(lesson);
-  });
-
-  return lessonsData;
+async function findLessonByName(courseId, levelId, lessonName) {
+  try {
+    const lesson = await lessonRepository.findLessonByName(courseId, levelId, lessonName);
+    return lesson;
+  } catch (error) {
+    throw new Error("Failed to find lesson by lessonName from repository");
+  }
 }
 
 module.exports = {
-  getAllLessonsForLevel,
+  getAllLessons,
+  findLessonById,
+  findLessonByName,
 };

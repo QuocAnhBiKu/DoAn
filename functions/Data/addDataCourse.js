@@ -28,7 +28,7 @@ const readExcelAndStoreInFirestore = async (filePath) => {
       const courseDocData = {
         courseId: courseRow[0],
         courseName: courseRow[1],
-        courseDescription: courseRow[2],
+        courseDescription: courseRow[2] ? courseRow[2].replace(/\n/g, '<br>') : '',
         courseTools: courseRow[3] ? courseRow[3].split(",").map(item => item.trim()) : [],
         courseLevels: courseRow[4] ? courseRow[4].split(",").map(item => item.trim()) : [],
       };
@@ -55,7 +55,7 @@ const readExcelAndStoreInFirestore = async (filePath) => {
           levelId: levelRow[0],
           courseId: levelRow[1],
           levelName: levelRow[2],
-          levelDescription: levelRow[3],
+          levelDescription: levelRow[3] ? levelRow[3].replace(/\n/g, '<br>') : '',
           levelTools: levelRow[4] ? levelRow[4].split(",").map(item => item.trim()) : [],
           levelLessons: levelRow[5] ? levelRow[5].split(",").map(item => item.trim()) : [],
         };
@@ -81,7 +81,7 @@ const readExcelAndStoreInFirestore = async (filePath) => {
             lessonNumber: lessonRow[4],
             lessonImage: lessonRow[5],
             lessonTopic: lessonRow[6],
-            lessonGoal: lessonRow[7],
+            lessonGoal: lessonRow[7] ? lessonRow[7].replace(/\n/g, '<br>') : '',
             lessonTools: lessonRow[8] ? lessonRow[8].split(",").map(item => item.trim()) : [],
             projectId: lessonRow[9],
             conceptComputerScience: lessonRow[10] ? lessonRow[10].split(",").map(item => item.trim()) : [],
