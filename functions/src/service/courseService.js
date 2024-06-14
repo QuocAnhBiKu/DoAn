@@ -1,24 +1,22 @@
-const { db } = require('../configs/firebaseConfig');
-const { collection, getDocs } = require('firebase/firestore');
+// services/courseService.js
+const CourseRepository = require('../repository/courseRepository');
+
+const courseRepository = new CourseRepository();
 
 async function getAllCourses() {
-  const coursesData = [];
+  return await courseRepository.getAllCourses();
+}
 
-  const coursesSnapshot = await getDocs(collection(db, 'Courses'));
+async function findByCourseId(courseId) {
+  return await courseRepository.findByCourseId(courseId);
+}
 
-  coursesSnapshot.forEach(doc => {
-    const course = {
-      courseId: doc.id,
-      courseName: doc.data().courseName,
-      courseDescription: doc.data().courseDescription,
-      courseTools: doc.data().courseTools || []
-    };
-    coursesData.push(course);
-  });
-
-  return coursesData;
+async function findByCourseName(courseName) {
+  return await courseRepository.findByCourseName(courseName);
 }
 
 module.exports = {
   getAllCourses,
+  findByCourseId,
+  findByCourseName,
 };
