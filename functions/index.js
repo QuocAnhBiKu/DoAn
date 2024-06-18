@@ -1,11 +1,20 @@
 const express = require('express');
 const routes = require('./src/routes/index');
 const cors = require('cors');
+const firebaseAdmin = require('firebase-admin');
+
+const serviceAccount = require('./serviceAccountKey.json');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
+
+// Initialize Firebase Admin SDK
+firebaseAdmin.initializeApp({
+  credential: firebaseAdmin.credential.cert(serviceAccount)
+});
+
 
 app.use('/api', routes);
 
