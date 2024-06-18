@@ -194,7 +194,26 @@ async function updateCourseInfo(courseId) {
         <h2>${checkValue(courseInfo.courseName)}</h2>
         <p><strong>Course Description:</strong> ${checkValue(courseInfo.courseDescription)}</p>
         <p><strong>Course Tools:</strong></p>
-        <ul>${courseInfo.courseTools.map(tool => `<li>${checkValue(tool)}</li>`).join('')}</ul>
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="border: 1px solid black; padding: 8px;">Name</th>
+              <th style="border: 1px solid black; padding: 8px;">Description</th>
+              <th style="border: 1px solid black; padding: 8px;">Version</th>
+              <th style="border: 1px solid black; padding: 8px;">Types</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${courseInfo.courseTools.map(tool => `
+              <tr>
+                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolName)}</td>
+                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolDescription)}</td>
+                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolVersion)}</td>
+                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolTypes)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
         <p><strong>Course Levels:</strong></p>
         <ul>${courseInfo.courseLevels.map(level => `<li>${checkValue(level)}</li>`).join('')}</ul>
       `;
