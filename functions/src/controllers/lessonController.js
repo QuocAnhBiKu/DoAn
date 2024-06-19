@@ -12,7 +12,7 @@ async function getAllLessons(req, res) {
 }
 
 async function findLessonById(req, res) {
-  const { courseId, levelId, lessonId } = req.params;
+  const { courseId, levelId, lessonId } = req.query;
   try {
     const lesson = await lessonService.findLessonById(courseId, levelId, lessonId);
     if (!lesson) {

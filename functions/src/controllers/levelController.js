@@ -1,7 +1,7 @@
 const levelService = require('../service/levelService');
 
 async function getAllLevelsForCourseController(req, res) {
-  const { courseId } = req.params;
+  const { courseId } = req.query;
   try {
     const levels = await levelService.getAllLevelsForCourseService(courseId);
     res.json(levels);
@@ -12,7 +12,7 @@ async function getAllLevelsForCourseController(req, res) {
 }
 
 async function findLevelByIdController(req, res) {
-  const { courseId, levelId } = req.params;
+  const { courseId, levelId } = req.query; // Sử dụng req.query
   try {
     const level = await levelService.findLevelByIdService(courseId, levelId);
     if (!level) {
