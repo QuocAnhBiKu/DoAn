@@ -6,6 +6,7 @@ body {
     gap: 20px;
     padding: 20px;
     background-color: #f4f4f4;
+    margin: 0;
 }
 
 .left-column {
@@ -14,19 +15,56 @@ body {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 20px; /* Cách lề trên 20px */
+    bottom: 20px; /* Cách lề dưới 20px */
+    left: 20px; /* Cách lề trái 20px */
+    overflow-y: auto; /* Cho phép cuộn khi nội dung vượt quá kích thước */
 }
 
 .right-column {
-    width: 60%;
+    width: 50%;
     padding: 20px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: none; /* Hide right column initially */
+    position: fixed;
+    top: 20px; /* Cách lề trên 20px */
+    bottom: 20px; /* Cách lề dưới 20px */
+    right: 20px; /* Cách lề phải 10px */
+    overflow-y: auto; /* Cho phép cuộn khi nội dung vượt quá kích thước */
+}
+
+/* Center login section */
+#loginSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.hidden {
+    display: none;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Increase opacity for more blur effect */
+    z-index: 500;
 }
 
 select {
-    width: 100%;
+    width: 50%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -46,12 +84,7 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    display: none; /* Hide button initially */
     font-size: 16px;
-}
-
-.hidden {
-    display: none;
 }
 
 .info-button {
@@ -93,4 +126,120 @@ button {
 .info-section p {
     margin: 10px 0;
     font-size: 16px;
+}
+
+/* Styles for login container */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.form-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for emphasis */
+    text-align: center;
+    border: 2px solid #4285F4; /* Highlight with border color */
+}
+
+#googleButton {
+    padding: 10px 20px;
+    background-color: #4285F4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Media Queries */
+/* Màn hình nhỏ (điện thoại di động) */
+@media (max-width: 576px) {
+    body {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px; /* Giảm padding cho màn hình nhỏ */
+    }
+
+    .left-column,
+    .right-column {
+        width: 100%;
+        position: static;
+        padding: 10px; /* Giảm padding cho các cột */
+    }
+
+    .right-column {
+        order: 2; /* Đưa khung bên phải xuống dưới */
+        margin-top: 20px; /* Thêm khoảng cách giữa hai cột */
+    }
+
+    .left-column {
+        order: 1;
+    }
+}
+
+/* Màn hình trung bình (máy tính bảng) */
+@media (min-width: 577px) and (max-width: 768px) {
+    body {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 15px; /* Tăng padding cho màn hình trung bình */
+    }
+
+    .left-column,
+    .right-column {
+        width: 95%;
+        position: static;
+        padding: 15px; /* Tăng padding cho các cột */
+    }
+
+    .right-column {
+        order: 2; /* Đưa khung bên phải xuống dưới */
+        margin-top: 30px; /* Tăng khoảng cách giữa hai cột */
+    }
+
+    .left-column {
+        order: 1;
+    }
+}
+
+/* Màn hình lớn (iPad) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    body {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 20px;
+    }
+
+    .left-column,
+    .right-column {
+        width: 96%;
+        position: static;
+        padding: 20px;
+    }
+
+    .right-column {
+        order: 2; /* Đưa khung bên phải xuống dưới */
+        margin-top: 30px; /* Tạo khoảng cách giữa hai cột */
+    }
+
+    .left-column {
+        order: 1;
+    }
+}
+
+/* Màn hình vừa (máy tính xách tay, máy tính bàn nhỏ) */
+@media (min-width: 1025px) and (max-width: 1280px) {
+    body {
+        padding: 20px;
+    }
+
+    .left-column,
+    .right-column {
+        padding: 20px;
+    }
 }

@@ -1,3 +1,85 @@
+// Xử lý đăng nhập bằng Google
+document.getElementById('googleButton').addEventListener('click', () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithRedirect(provider);
+});
+
+// Xử lý sau khi trang web được chuyển hướng từ Google về
+firebase.auth().getRedirectResult().then((result) => {
+  if (result.credential) {
+    // Lấy ID token từ kết quả đăng nhập
+    const idToken = result.credential.idToken;
+    console.log(idToken); // For debugging purposes
+
+    // Lưu token vào cookie
+    setCookie('google_id_token', idToken, 1/1440); // Lưu trong 1/24/60 = 1 phút
+
+    // Xử lý đăng nhập thành công
+    handleLoginSuccess();
+  }
+}).catch((error) => {
+  console.error('Đăng nhập bằng Google không thành công:', error);
+  alert('Đăng nhập bằng Google không thành công.');
+});
+
+// Function to set cookie
+function setCookie(name, value, days) {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+}
+
+// Function to get cookie
+function getCookie(name) {
+  return document.cookie.split('; ').reduce((r, v) => {
+    const parts = v.split('=');
+    return parts[0] === name ? decodeURIComponent(parts[1]) : r
+  }, '');
+}
+
+// Function to handle login success
+function handleLoginSuccess() {
+  alert('Đăng nhập thành công!'); // Thông báo đăng nhập thành công
+
+  // Ẩn khung đăng nhập
+  hideLoginForm();
+
+  // Show main content
+  document.getElementById('main').style.display = 'block';
+
+  // Call populateCourses to load the course data
+  populateCourses();
+}
+
+// Function to hide login form
+function hideLoginForm() {
+  document.getElementById('loginSection').style.display = 'none';
+}
+
+// Check if user is already logged in
+window.onload = () => {
+  const token = getCookie('google_id_token');
+  if (token) {
+    // Verify the token with Firebase to ensure it's still valid
+    firebase.auth().signInWithCredential(firebase.auth.GoogleAuthProvider.credential(token))
+      .then(() => {
+        // Token is valid, consider user as logged in
+        handleLoginSuccess();
+      })
+      .catch(error => {
+        console.error('Token verification failed:', error);
+        // Token is invalid, clear the cookie
+        setCookie('google_id_token', '', -1);
+        // Show login section
+        document.getElementById('loginSection').style.display = 'block';
+        document.getElementById('main').style.display = 'none';
+      });
+  } else {
+    // Token not present, show login section
+    document.getElementById('loginSection').style.display = 'block';
+    document.getElementById('main').style.display = 'none';
+  }
+};
+
 // Endpoint API
 const APIMain = "http://localhost:3000/api"
 const coursesEndpoint = `${APIMain}/courses`;
@@ -397,4 +479,3 @@ if (selectedValue === "concept") {
 function showGenerateButton(sectionId) {
 document.getElementById(sectionId).querySelector("button").style.display = "block";
 }
-
