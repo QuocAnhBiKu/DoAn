@@ -1,7 +1,7 @@
 const lessonService = require("../service/lessonService");
 
 async function getAllLessons(req, res) {
-  const { courseId, levelId } = req.params;
+  const { courseId, levelId } = req.query;
   try {
     const lessons = await lessonService.getAllLessons(courseId, levelId);
     res.json(lessons);
