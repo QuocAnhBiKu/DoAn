@@ -12,7 +12,7 @@ async function getAllCourses(req, res) {
 
 async function findByCourseId(req, res) {
   try {
-    const courseId = req.params.courseId; // Update to use courseId
+    const courseId = req.query.courseId; // Update to use req.query.id
     const course = await courseService.findByCourseId(courseId);
     if (course) {
       res.json(course);
@@ -26,7 +26,7 @@ async function findByCourseId(req, res) {
 
 async function findByCourseName(req, res) {
   try {
-    const courseName = req.params.courseName;
+    const courseName = req.query.courseName;
     const courses = await courseService.findByCourseName(courseName);
     res.json(courses);
   } catch (error) {
