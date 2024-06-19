@@ -3,6 +3,7 @@ const { collection, getDocs, where, query, doc, getDoc } = require("firebase/fir
 const Lesson = require("../model/lessonModel");
 const materialRepository = require('./materialRepository');
 const projectRepository = require('./projectRepository');
+const toolRepository = require('./toolRepository'); // Assuming you have a toolRepository
 
 class LessonRepository {
   async getAllLessons(courseId, levelId) {
@@ -28,6 +29,7 @@ class LessonRepository {
       const lesson = new Lesson(doc, courseId, levelId);
       lesson.materials = await this.getLessonMaterials(doc);
       lesson.project = await this.getLessonProject(doc);
+      lesson.tools = await this.getLessonTools(doc); // Fetch tools for the lesson
       lessonsData.push(lesson);
     }
 
@@ -39,19 +41,20 @@ class LessonRepository {
     const materialTypes = ['lessonPlan', 'slide', 'summary', 'quiz', 'video'];
 
     for (const type of materialTypes) {
-        const materialId = lessonDoc.data()[`${type}Id`];
-        if (materialId) {
-            const material = await materialRepository.findByMaterialId(materialId);
-            if (material) {
-                materials[type] = material;
-            } else {
-                console.log(`Material of type ${type} with ID ${materialId} not found for lesson ${lessonDoc.id}`);
-            }
+      const materialId = lessonDoc.data()[`${type}Id`];
+      if (materialId) {
+        const material = await materialRepository.findByMaterialId(materialId);
+        if (material) {
+          materials[type] = material;
+        } else {
+          console.log(`Material of type ${type} with ID ${materialId} not found for lesson ${lessonDoc.id}`);
         }
+      }
     }
 
     return materials;
-}
+  }
+
   async getLessonProject(lessonDoc) {
     const projectId = lessonDoc.data().projectId;
     if (projectId) {
@@ -59,6 +62,27 @@ class LessonRepository {
     }
     return null;
   }
+
+  async getLessonTools(lessonDoc) {
+    const toolIds = lessonDoc.data().lessonTools || [];
+    const tools = [];
+  
+    for (const toolId of toolIds) {
+      try {
+        const tool = await toolRepository.getToolById(toolId);
+        if (tool) {
+          tools.push(tool);
+        } else {
+          console.log(`Tool with ID ${toolId} not found.`);
+        }
+      } catch (error) {
+        console.error(`Error fetching tool with ID ${toolId}:`, error);
+      }
+    }
+  
+    return tools;
+  }
+  
 
   async findLessonById(courseId, levelId, lessonId) {
     const lessonsRef = collection(
@@ -80,6 +104,7 @@ class LessonRepository {
     const lesson = new Lesson(doc, courseId, levelId);
     lesson.materials = await this.getLessonMaterials(doc);
     lesson.project = await this.getLessonProject(doc);
+    lesson.tools = await this.getLessonTools(doc); // Fetch tools for the lesson
     return lesson;
   }
 
@@ -103,6 +128,7 @@ class LessonRepository {
     const lesson = new Lesson(doc, courseId, levelId);
     lesson.materials = await this.getLessonMaterials(doc);
     lesson.project = await this.getLessonProject(doc);
+    lesson.tools = await this.getLessonTools(doc); // Fetch tools for the lesson
     return lesson;
   }
 }

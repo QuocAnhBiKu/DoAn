@@ -20,7 +20,7 @@ class CourseRepository {
         doc.data().courseName,
         doc.data().courseDescription,
         doc.data().courseTools || [],
-        doc.data().courseLevels || {}
+        {}
       );
   
       // Lấy thông tin công cụ cho mỗi toolId trong courseTools
@@ -33,6 +33,9 @@ class CourseRepository {
   
       // Lấy thông tin level cho khóa học
       const levels = await levelRepository.getAllLevelsForCourseWithDetails(doc.id);
+      const levelNames = levels.map(level => level.levelName);
+      course.courseLevels = levelNames;
+
   
       // Lấy thông tin lesson cho mỗi level
       const levelsWithLessons = await Promise.all(
@@ -76,26 +79,38 @@ return coursesData;
     const coursesSnapshot = await getDocs(this.coursesCollection);
   
     for (const doc of coursesSnapshot.docs) {
-      const course = new Course(
-        doc.id,
-        doc.data().courseName,
-        doc.data().courseDescription,
-        doc.data().courseTools || [],
-        doc.data().courseLevels || {}
-      );
+      const courseData = doc.data();
+      const course = {
+        courseId: doc.id,
+        courseName: courseData.courseName,
+        courseDescription: courseData.courseDescription,
+        courseTools: [],
+        courseLevels: []
+      };
+  
+      // Retrieve tool details for each toolId in courseTools
       const toolsData = [];
-      for (const toolId of doc.data().courseTools || []) {
-        const tool = await toolRepository.getToolById(toolId);
-        if (tool) {
-          toolsData.push(tool);
+      if (courseData.courseTools) {
+        for (const toolId of courseData.courseTools) {
+          const tool = await toolRepository.getToolById(toolId);
+          if (tool) {
+            toolsData.push(tool);
+          }
         }
       }
       course.courseTools = toolsData;
+  
+      // Retrieve level names for the course
+      const levels = await levelRepository.getAllLevelsForCourse(course.courseId);
+      const levelNames = levels.map(level => level.levelName);
+      course.courseLevels = levelNames;
+  
       coursesData.push(course);
     }
   
     return coursesData;
   }
+  
   async findByCourseId(courseId) {
     const courseDoc = await getDoc(doc(this.coursesCollection, courseId));
     if (courseDoc.exists()) {
@@ -105,7 +120,7 @@ return coursesData;
         courseData.courseName,
         courseData.courseDescription,
         courseData.courseTools || [],
-        courseData.courseLevels || {}
+        []  // Initialize with an empty array for courseLevels
       );
   
       // Lấy thông tin công cụ cho mỗi toolId trong courseTools
@@ -117,6 +132,16 @@ return coursesData;
         }
       }
       course.courseTools = toolsData;
+  
+      // Lấy thông tin level cho khóa học
+      const levelsData = [];
+      for (const levelId of courseData.courseLevels || []) {
+        const level = await levelRepository.findLevelById(courseId, levelId);
+        if (level) {
+          levelsData.push(level.levelName);  // Extract levelName only
+        }
+      }
+      course.courseLevels = levelsData;
   
       return course;
     } else {
