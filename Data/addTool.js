@@ -1,5 +1,5 @@
 // addTool.js
-const { db } = require('../src/configs/firebaseConfig');
+const { db } = require('../functions/src/configs/firebaseConfig');
 const { doc, setDoc } = require('firebase/firestore');
 const XLSX = require('xlsx');
 const path = require('path');

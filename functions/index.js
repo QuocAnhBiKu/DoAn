@@ -34,7 +34,7 @@ app.post('/login-google', (req, res) => {
     });
 });
 
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 exports.app = functions.https.onRequest(app);
