@@ -8,7 +8,9 @@
 </head>
 <body>
 
-<div class="left-column">
+<div class="overlay hidden" id="overlay"></div>
+
+<div class="left-column" id="main">
   <h1>Course Creator</h1>
 
   <label for="course">Course:</label>
@@ -89,6 +91,19 @@
   </div>
 </div>
 
+<!-- Login Section -->
+<div id="loginSection" class="visible">
+  <div class="container">
+    <div class="form-container">
+      <h2>Đăng nhập bằng Google</h2>
+      <button id="googleButton">Đăng nhập bằng Google</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+<script src="config.js"></script>
 <script src="index.js"></script>
 
 </body>
