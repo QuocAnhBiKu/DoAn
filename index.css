@@ -33,6 +33,7 @@ body {
     bottom: 20px; /* Cách lề dưới 20px */
     right: 20px; /* Cách lề phải 10px */
     overflow-y: auto; /* Cho phép cuộn khi nội dung vượt quá kích thước */
+    display: none;
 }
 
 /* Center login section */

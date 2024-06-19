@@ -11,8 +11,13 @@ firebase.auth().getRedirectResult().then((result) => {
     const idToken = result.credential.idToken;
     console.log(idToken); // For debugging purposes
 
-    // Lưu token vào cookie
-    setCookie('google_id_token', idToken, 1/1440); // Lưu trong 1/24/60 = 1 phút
+    // Lưu token vào localStorage với thời hạn 60 giây
+    localStorage.setItem('google_id_token', idToken);
+    setTimeout(() => {
+      localStorage.removeItem('google_id_token');
+      alert('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.');
+      showLoginForm();
+    }, 60000); // 60 giây
 
     // Xử lý đăng nhập thành công
     handleLoginSuccess();
@@ -21,20 +26,6 @@ firebase.auth().getRedirectResult().then((result) => {
   console.error('Đăng nhập bằng Google không thành công:', error);
   alert('Đăng nhập bằng Google không thành công.');
 });
-
-// Function to set cookie
-function setCookie(name, value, days) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
-}
-
-// Function to get cookie
-function getCookie(name) {
-  return document.cookie.split('; ').reduce((r, v) => {
-    const parts = v.split('=');
-    return parts[0] === name ? decodeURIComponent(parts[1]) : r
-  }, '');
-}
 
 // Function to handle login success
 function handleLoginSuccess() {
@@ -55,9 +46,15 @@ function hideLoginForm() {
   document.getElementById('loginSection').style.display = 'none';
 }
 
+// Function to show login form
+function showLoginForm() {
+  document.getElementById('loginSection').style.display = 'block';
+  document.getElementById('main').style.display = 'none';
+}
+
 // Check if user is already logged in
 window.onload = () => {
-  const token = getCookie('google_id_token');
+  const token = localStorage.getItem('google_id_token');
   if (token) {
     // Verify the token with Firebase to ensure it's still valid
     firebase.auth().signInWithCredential(firebase.auth.GoogleAuthProvider.credential(token))
@@ -67,16 +64,14 @@ window.onload = () => {
       })
       .catch(error => {
         console.error('Token verification failed:', error);
-        // Token is invalid, clear the cookie
-        setCookie('google_id_token', '', -1);
+        // Token is invalid, clear the localStorage item
+        localStorage.removeItem('google_id_token');
         // Show login section
-        document.getElementById('loginSection').style.display = 'block';
-        document.getElementById('main').style.display = 'none';
+        showLoginForm();
       });
   } else {
     // Token not present, show login section
-    document.getElementById('loginSection').style.display = 'block';
-    document.getElementById('main').style.display = 'none';
+    showLoginForm();
   }
 };
 
