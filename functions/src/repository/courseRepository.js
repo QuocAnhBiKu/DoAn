@@ -13,16 +13,16 @@ class CourseRepository {
   async getAllCoursesWithDetails() {
     const coursesData = [];
     const coursesSnapshot = await getDocs(this.coursesCollection);
-  
+
     for (const doc of coursesSnapshot.docs) {
       const course = new Course(
         doc.id,
         doc.data().courseName,
         doc.data().courseDescription,
         doc.data().courseTools || [],
-        {}
+        doc.data().courseLevels || {}
       );
-  
+
       // Lấy thông tin công cụ cho mỗi toolId trong courseTools
       const toolPromises = (doc.data().courseTools || []).map(async (toolId) => {
         const tool = await toolRepository.getToolById(toolId);
@@ -30,13 +30,10 @@ class CourseRepository {
       });
       const toolsData = await Promise.all(toolPromises);
       course.courseTools = toolsData.filter(Boolean); // Lọc ra các tool không null
-  
+
       // Lấy thông tin level cho khóa học
       const levels = await levelRepository.getAllLevelsForCourseWithDetails(doc.id);
-      const levelNames = levels.map(level => level.levelName);
-      course.courseLevels = levelNames;
 
-  
       // Lấy thông tin lesson cho mỗi level
       const levelsWithLessons = await Promise.all(
         levels.map(async (level) => {
@@ -45,20 +42,20 @@ class CourseRepository {
           return level;
         })
       );
-  
+
       coursesData.push({
         course: course,
         levels: levelsWithLessons
       });
     }
-  
-return coursesData;
-}
+
+    return coursesData;
+  }
 
   async findByIdData(courseId, levelId, lessonId) {
     const course = await this.findByCourseId(courseId);
     if (!course) return null;
-  
+
     const level = await levelRepository.findLevelById(courseId, levelId);
     if (level) {
       const lesson = await lessonRepository.findLessonById(courseId, levelId, lessonId);
@@ -70,85 +67,81 @@ return coursesData;
         };
       }
     }
-  
+
     return null;
   }
 
   async getAllCourses() {
-    const coursesData = [];
-    const coursesSnapshot = await getDocs(this.coursesCollection);
+    try {
+      const coursesData = [];
+      const coursesSnapshot = await getDocs(this.coursesCollection);
   
-    for (const doc of coursesSnapshot.docs) {
-      const courseData = doc.data();
-      const course = {
-        courseId: doc.id,
-        courseName: courseData.courseName,
-        courseDescription: courseData.courseDescription,
-        courseTools: [],
-        courseLevels: []
-      };
+      const coursePromises = coursesSnapshot.docs.map(async doc => {
+        const courseData = doc.data();
+        const courseId = doc.id; // Lấy id của course từ doc
+        const course = new Course(
+          courseId,
+          courseData.courseName,
+          courseData.courseDescription,
+          courseData.courseTools || [],
+          courseData.courseLevels || {}
+        );
   
-      // Retrieve tool details for each toolId in courseTools
-      const toolsData = [];
-      if (courseData.courseTools) {
-        for (const toolId of courseData.courseTools) {
-          const tool = await toolRepository.getToolById(toolId);
-          if (tool) {
-            toolsData.push(tool);
-          }
-        }
-      }
-      course.courseTools = toolsData;
+        // Lấy thông tin công cụ cho mỗi toolId trong courseTools
+        const toolPromises = (courseData.courseTools || []).map(toolId => toolRepository.getToolById(toolId));
+        const toolsData = await Promise.all(toolPromises);
+        course.courseTools = toolsData.filter(tool => tool !== null);
   
-      // Retrieve level names for the course
-      const levels = await levelRepository.getAllLevelsForCourse(course.courseId);
-      const levelNames = levels.map(level => level.levelName);
-      course.courseLevels = levelNames;
+        // Lấy tên của các level từ ID và gán vào course.courseLevels
+        const levelPromises = (courseData.courseLevels || []).map(levelId => levelRepository.findLevelById(courseId, levelId)); // Sử dụng courseId
+        const levelsData = await Promise.all(levelPromises);
+        course.courseLevels = levelsData.filter(level => level !== null).map(level => level.levelName);
   
-      coursesData.push(course);
+        coursesData.push(course);
+      });
+  
+      await Promise.all(coursePromises);
+  
+      return coursesData;
+    } catch (error) {
+      console.error('Error in getAllCourses:', error);
+      throw error; // Throw the error to propagate it up
     }
-  
-    return coursesData;
   }
   
   async findByCourseId(courseId) {
-    const courseDoc = await getDoc(doc(this.coursesCollection, courseId));
-    if (courseDoc.exists()) {
+    try {
+      const courseDoc = await getDoc(doc(this.coursesCollection, courseId));
+  
+      if (!courseDoc.exists()) {
+        return null;
+      }
+  
       const courseData = courseDoc.data();
       const course = new Course(
         courseDoc.id,
         courseData.courseName,
         courseData.courseDescription,
         courseData.courseTools || [],
-        []  // Initialize with an empty array for courseLevels
+        courseData.courseLevels || {}
       );
   
       // Lấy thông tin công cụ cho mỗi toolId trong courseTools
-      const toolsData = [];
-      for (const toolId of course.courseTools) {
-        const tool = await toolRepository.getToolById(toolId);
-        if (tool) {
-          toolsData.push(tool);
-        }
-      }
-      course.courseTools = toolsData;
+      const toolPromises = (courseData.courseTools || []).map(toolId => toolRepository.getToolById(toolId));
+      const toolsData = await Promise.all(toolPromises);
+      course.courseTools = toolsData.filter(tool => tool !== null);
   
-      // Lấy thông tin level cho khóa học
-      const levelsData = [];
-      for (const levelId of courseData.courseLevels || []) {
-        const level = await levelRepository.findLevelById(courseId, levelId);
-        if (level) {
-          levelsData.push(level.levelName);  // Extract levelName only
-        }
-      }
-      course.courseLevels = levelsData;
+      // Lấy tên của các level từ ID và gán vào course.courseLevels
+      const levelPromises = (courseData.courseLevels || []).map(levelId => levelRepository.findLevelById(courseId, levelId)); // Sử dụng courseId
+      const levelsData = await Promise.all(levelPromises);
+      course.courseLevels = levelsData.filter(level => level !== null).map(level => level.levelName);
   
       return course;
-    } else {
-      return null;
+    } catch (error) {
+      console.error('Error in findByCourseId:', error);
+      throw error; // Throw the error to propagate it up
     }
   }
-
   async findByCourseName(courseName) {
     const coursesQuery = query(this.coursesCollection, where('courseName', '==', courseName));
     const coursesSnapshot = await getDocs(coursesQuery);

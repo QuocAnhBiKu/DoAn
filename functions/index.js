@@ -2,6 +2,7 @@ const express = require('express');
 const routes = require('./src/routes/index');
 const cors = require('cors');
 const firebaseAdmin = require('firebase-admin');
+const functions = require('firebase-functions');
 
 const serviceAccount = require('./serviceAccountKey.json');
 
@@ -33,6 +34,7 @@ app.post('/login-google', (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+exports.app = functions.https.onRequest(app);
