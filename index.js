@@ -96,7 +96,7 @@ async function fetchCourses() {
 // Function to fetch levels from the API
 async function fetchLevels(courseId) {
   try {
-    const response = await fetch(`${levelsEndpoint}${courseId}`);
+    const response = await fetch(`${levelsEndpoint}?courseId=${courseId}`);
     const levels = await response.json();
     return levels;
   } catch (error) {
@@ -120,7 +120,7 @@ async function fetchLessons(courseId, levelId) {
 // Function to fetch course info from the API
 async function fetchCourseInfo(courseId) {
   try {
-    const response = await fetch(`${coursesEndpoint}/id/${courseId}`);
+    const response = await fetch(`${coursesEndpoint}/find?courseId=${courseId}`);
     const courseInfo = await response.json();
     return courseInfo;
   } catch (error) {
@@ -132,7 +132,7 @@ async function fetchCourseInfo(courseId) {
 // Function to fetch level info from the API
 async function fetchLevelInfo(courseId, levelId) {
   try {
-    const response = await fetch(`${levelsEndpoint}${courseId}/id/${levelId}`);
+    const response = await fetch(`${levelsEndpoint}/find?courseId=${courseId}&levelId=${levelId}`);
     const levelInfo = await response.json();
     return levelInfo;
   } catch (error) {
@@ -177,9 +177,10 @@ async function fetchData(courseId, levelId, lessonId) {
   }
 }
 
+// Function to update course info
 async function updateCourseInfo(courseId) {
   try {
-    const { courseInfo, levels } = await fetchData(courseId);
+    const courseInfo = await fetchCourseInfo(courseId);
     if (courseInfo) {
       const courseInfoContainer = document.getElementById("courseInfoContainer");
       courseInfoContainer.innerHTML = `
@@ -207,7 +208,7 @@ async function updateCourseInfo(courseId) {
           </tbody>
         </table>
         <p><strong>Course Levels:</strong></p>
-        <ul>${levels.map(level => `<li>${checkValue(level.levelName)}</li>`).join('')}</ul>
+        <ul>${courseInfo.courseLevels.map(level => `<li>${checkValue(level)}</li>`).join('')}</ul>
       `;
     } else {
       console.error("Failed to update course info: courseInfo is null or undefined");
@@ -217,9 +218,10 @@ async function updateCourseInfo(courseId) {
   }
 }
 
+// Function to update level info
 async function updateLevelInfo(courseId, levelId) {
   try {
-    const { levelInfo, lessons } = await fetchData(courseId, levelId);
+    const levelInfo = await fetchLevelInfo(courseId, levelId);
     if (levelInfo) {
       const levelInfoContainer = document.getElementById("levelInfoContainer");
       levelInfoContainer.innerHTML = `
@@ -228,7 +230,7 @@ async function updateLevelInfo(courseId, levelId) {
         <p><strong>Level Tools:</strong></p>
         <ul>${levelInfo.levelTools.map(tool => `<li>${checkValue(tool.toolName)}</li>`).join('')}</ul>
         <p><strong>Level Lessons:</strong></p>
-        <ul>${lessons.map(lesson => `<li>${checkValue(lesson.lessonName)}</li>`).join('')}</ul>
+        <ul>${levelInfo.levelLessons.map(lesson => `<li>${checkValue(lesson)}</li>`).join('')}</ul>
       `;
     } else {
       console.error("Failed to update level info: levelInfo is null or undefined");
