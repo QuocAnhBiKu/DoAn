@@ -17,7 +17,7 @@ firebase.auth().getRedirectResult().then((result) => {
       localStorage.removeItem('google_id_token');
       alert('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.');
       showLoginForm();
-    }, 60000); // 60 giây
+    }, 60000*60); // 60 giây
 
     // Xử lý đăng nhập thành công
     handleLoginSuccess();
@@ -146,7 +146,6 @@ async function fetchLessonInfo(courseId, levelId, lessonId) {
   try {
     const response = await fetch(`${lessonsEndpoint}${courseId}/${levelId}/id/${lessonId}`);
     const lessonInfo = await response.json();
-    console.log(lessonInfo)
     return lessonInfo;
   } catch (error) {
     console.error("Error fetching lesson info:", error);
@@ -154,43 +153,189 @@ async function fetchLessonInfo(courseId, levelId, lessonId) {
   }
 }
 
+// Function to fetch all necessary data for a given courseId, levelId, lessonId
+async function fetchData(courseId, levelId, lessonId) {
+  try {
+    const [courseInfo, levels, lessons, levelInfo, lessonInfo] = await Promise.all([
+      fetchCourseInfo(courseId),
+      fetchLevels(courseId),
+      fetchLessons(courseId, levelId),
+      fetchLevelInfo(courseId, levelId),
+      fetchLessonInfo(courseId, levelId, lessonId)
+    ]);
+
+    return {
+      courseInfo,
+      levels,
+      lessons,
+      levelInfo,
+      lessonInfo
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return null;
+  }
+}
+
+async function updateCourseInfo(courseId) {
+  try {
+    const { courseInfo, levels } = await fetchData(courseId);
+    if (courseInfo) {
+      const courseInfoContainer = document.getElementById("courseInfoContainer");
+      courseInfoContainer.innerHTML = `
+        <h2>${checkValue(courseInfo.courseName)}</h2>
+        <p><strong>Course Description:</strong> ${checkValue(courseInfo.courseDescription)}</p>
+        <p><strong>Course Tools:</strong></p>
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="border: 1px solid black; padding: 8px;">Name</th>
+              <th style="border: 1px solid black; padding: 8px;">Description</th>
+              <th style="border: 1px solid black; padding: 8px;">Version</th>
+              <th style="border: 1px solid black; padding: 8px;">Types</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${courseInfo.courseTools.map(tool => `
+              <tr>
+                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolName)}</td>
+                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolDescription)}</td>
+                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolVersion)}</td>
+                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolTypes)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <p><strong>Course Levels:</strong></p>
+        <ul>${levels.map(level => `<li>${checkValue(level.levelName)}</li>`).join('')}</ul>
+      `;
+    } else {
+      console.error("Failed to update course info: courseInfo is null or undefined");
+    }
+  } catch (error) {
+    console.error("Failed to update course info:", error);
+  }
+}
+
+async function updateLevelInfo(courseId, levelId) {
+  try {
+    const { levelInfo, lessons } = await fetchData(courseId, levelId);
+    if (levelInfo) {
+      const levelInfoContainer = document.getElementById("levelInfoContainer");
+      levelInfoContainer.innerHTML = `
+        <h2>${checkValue(levelInfo.levelName)}</h2>
+        <p><strong>Level Description:</strong> ${checkValue(levelInfo.levelDescription)}</p>
+        <p><strong>Level Tools:</strong></p>
+        <ul>${levelInfo.levelTools.map(tool => `<li>${checkValue(tool.toolName)}</li>`).join('')}</ul>
+        <p><strong>Level Lessons:</strong></p>
+        <ul>${lessons.map(lesson => `<li>${checkValue(lesson.lessonName)}</li>`).join('')}</ul>
+      `;
+    } else {
+      console.error("Failed to update level info: levelInfo is null or undefined");
+    }
+  } catch (error) {
+    console.error("Failed to update level info:", error);
+  }
+}
+
+async function updateLessonInfo(courseId, levelId, lessonId) {
+  try {
+    const { lessonInfo } = await fetchData(courseId, levelId, lessonId);
+    if (lessonInfo) {
+      const lessonInfoContainer = document.getElementById("lessonInfoContainer");
+
+      lessonInfoContainer.innerHTML = `
+        <h2>${checkValue(lessonInfo.lessonName)}</h2>
+        <p><strong>Lesson Number:</strong> ${checkValue(lessonInfo.lessonNumber)}</p>
+        <p><strong>Lesson Image:</strong></p>
+        <p><a href="${checkValue(lessonInfo.lessonImage)}" target="_blank" style="color: black;">${checkValue(lessonInfo.lessonImage)}</a></p>
+        <p><strong>Lesson Topic:</strong> ${checkValue(lessonInfo.lessonTopic)}</p>
+        <p><strong>Lesson Goal:</strong> ${checkValue(lessonInfo.lessonGoal)}</p>
+        <p><strong>Lesson Tools:</strong> ${lessonInfo.lessonTools.map(checkValue).join(', ')}</p>
+        <p><strong>Concepts:</strong></p>
+        <ul>
+          <li><strong>Computer Science:</strong> ${lessonInfo.lessonConcepts.conceptComputerScience.map(checkValue).join(', ')}</li>
+          <li><strong>Science:</strong> ${lessonInfo.lessonConcepts.conceptScience.map(checkValue).join(', ')}</li>
+          <li><strong>Tech:</strong> ${lessonInfo.lessonConcepts.conceptTech.map(checkValue).join(', ')}</li>
+          <li><strong>Engineering:</strong> ${lessonInfo.lessonConcepts.conceptEngineering.map(checkValue).join(', ')}</li>
+          <li><strong>Art:</strong> ${      lessonInfo.lessonConcepts.conceptArt.map(checkValue).join(', ')}</li>
+          <li><strong>Math:</strong> ${lessonInfo.lessonConcepts.conceptMath.map(checkValue).join(', ')}</li>
+          <li><strong>Skill:</strong> ${lessonInfo.lessonConcepts.conceptSkill.map(checkValue).join(', ')}</li>
+        </ul>
+        <p><strong>Materials:</strong></p>
+        <ul>
+          <li><strong>Lesson Plan:</strong> <a href="${checkValue(lessonInfo.materials.lessonPlan?.materialLink)}" target="_blank" style="color: black;">${checkValue(lessonInfo.materials.lessonPlan?.materialName)}</a></li>
+          <li><strong>Slide:</strong> <a href="${checkValue(lessonInfo.materials.slide?.materialLink)}" target="_blank" style="color: black;">${checkValue(lessonInfo.materials.slide?.materialName)}</a></li>
+          <li><strong>Summary:</strong> <a href="${checkValue(lessonInfo.materials.summary?.materialLink)}" target="_blank" style="color: black;">${checkValue(lessonInfo.materials.summary?.materialName)}</a></li>
+          <li><strong>Quiz:</strong> <a href="${checkValue(lessonInfo.materials.quiz?.materialLink)}" target="_blank" style="color: black;">${checkValue(lessonInfo.materials.quiz?.materialName)}</a></li>
+          <li><strong>Video:</strong> <a href="${checkValue(lessonInfo.materials.video?.materialLink)}" target="_blank" style="color: black;">${checkValue(lessonInfo.materials.video?.materialName)}</a></li>
+        </ul>
+        <p><strong>Project:</strong></p>
+        <ul>
+          <li><strong>Project Name:</strong> ${checkValue(lessonInfo.project.projectName)}</li>
+          <li><strong>Project Description:</strong> ${checkValue(lessonInfo.project.projectDescription)}</li>
+          <li><strong>Project Related Concepts:</strong> ${lessonInfo.project.projectRelatedConcepts.map(checkValue).join(', ')}</li>
+          <li><strong>Project Tools:</strong> ${lessonInfo.project.projectTools.map(checkValue).join(', ')}</li>
+          <li><strong>Project Instruction:</strong> <a href="${checkValue(lessonInfo.project.projectInstruction)}" target="_blank" style="color: black;">${checkValue(lessonInfo.project.projectInstruction)}</a></li>
+        </ul>
+      `;
+    } else {
+      console.error("Failed to update lesson info: lessonInfo is null or undefined");
+    }
+  } catch (error) {
+    console.error("Failed to update lesson info:", error);
+  }
+}
+
 // Function to populate course dropdown
 async function populateCourses() {
-  const courses = await fetchCourses();
-  const courseSelect = document.getElementById("course");
-  courseSelect.innerHTML = '<option value="" disabled selected>Select Course</option>';
-  courses.forEach(course => {
-    const option = document.createElement("option");
-    option.value = course.courseId;
-    option.text = course.courseName;
-    courseSelect.add(option);
-  });
+  try {
+    const courses = await fetchCourses();
+    const courseSelect = document.getElementById("course");
+    courseSelect.innerHTML = '<option value="" disabled selected>Select Course</option>';
+    courses.forEach(course => {
+      const option = document.createElement("option");
+      option.value = course.courseId;
+      option.text = course.courseName;
+      courseSelect.add(option);
+    });
+  } catch (error) {
+    console.error("Error populating courses:", error);
+  }
 }
 
 // Function to populate level dropdown
 async function populateLevels(courseId) {
-  const levels = await fetchLevels(courseId);
-  const levelSelect = document.getElementById("level");
-  levelSelect.innerHTML = '<option value="" disabled selected>Select Level</option>';
-  levels.forEach(level => {
-    const option = document.createElement("option");
-    option.value = level.levelId;
-    option.text = level.levelName;
-    levelSelect.add(option);
-  });
+  try {
+    const levels = await fetchLevels(courseId);
+    const levelSelect = document.getElementById("level");
+    levelSelect.innerHTML = '<option value="" disabled selected>Select Level</option>';
+    levels.forEach(level => {
+      const option = document.createElement("option");
+      option.value = level.levelId;
+      option.text = level.levelName;
+      levelSelect.add(option);
+    });
+  } catch (error) {
+    console.error("Error populating levels:", error);
+  }
 }
 
 // Function to populate lesson dropdown
 async function populateLessons(courseId, levelId) {
-  const lessons = await fetchLessons(courseId, levelId);
-  const lessonSelect = document.getElementById("lessonName");
-  lessonSelect.innerHTML = '<option value="" disabled selected>Select Lesson</option>';
-  lessons.forEach(lesson => {
-    const option = document.createElement("option");
-    option.value = lesson.lessonId;
-    option.text = lesson.lessonName;
-    lessonSelect.add(option);
-  });
+  try {
+    const lessons = await fetchLessons(courseId, levelId);
+    const lessonSelect = document.getElementById("lessonName");
+    lessonSelect.innerHTML = '<option value="" disabled selected>Select Lesson</option>';
+    lessons.forEach(lesson => {
+      const option = document.createElement("option");
+      option.value = lesson.lessonId;
+      option.text = lesson.lessonName;
+      lessonSelect.add(option);
+    });
+  } catch (error) {
+    console.error("Error populating lessons:", error);
+  }
 }
 
 // Function to handle Course change
@@ -259,119 +404,6 @@ function checkValue(value) {
     return "Not Available";
   }
   return value;
-}
-
-// Function to update course info
-async function updateCourseInfo(courseId) {
-  try {
-    const courseInfo = await fetchCourseInfo(courseId);
-    if (courseInfo) {
-      const courseInfoContainer = document.getElementById("courseInfoContainer");
-      courseInfoContainer.innerHTML = `
-        <h2>${checkValue(courseInfo.courseName)}</h2>
-        <p><strong>Course Description:</strong> ${checkValue(courseInfo.courseDescription)}</p>
-        <p><strong>Course Tools:</strong></p>
-        <table style="width: 100%; border-collapse: collapse;">
-          <thead>
-            <tr>
-              <th style="border: 1px solid black; padding: 8px;">Name</th>
-              <th style="border: 1px solid black; padding: 8px;">Description</th>
-              <th style="border: 1px solid black; padding: 8px;">Version</th>
-              <th style="border: 1px solid black; padding: 8px;">Types</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${courseInfo.courseTools.map(tool => `
-              <tr>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolName)}</td>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolDescription)}</td>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolVersion)}</td>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolTypes)}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-        <p><strong>Course Levels:</strong></p>
-        <ul>${courseInfo.courseLevels.map(level => `<li>${checkValue(level)}</li>`).join('')}</ul>
-      `;
-    } else {
-      console.error("Failed to update course info: courseInfo is null or undefined");
-    }
-  } catch (error) {
-    console.error("Failed to update course info:", error);
-  }
-}
-
-// Function to update level info
-async function updateLevelInfo(courseId, levelId) {
-  try {
-    const levelInfo = await fetchLevelInfo(courseId, levelId);
-    if (levelInfo) {
-      const levelInfoContainer = document.getElementById("levelInfoContainer");
-      levelInfoContainer.innerHTML = `
-        <h2>${checkValue(levelInfo.levelName)}</h2>
-        <p><strong>Level Description:</strong> ${checkValue(levelInfo.levelDescription)}</p>
-        <p><strong>Level Tools:</strong></p>
-        <ul>${levelInfo.levelTools.map(tool => `<li>${checkValue(tool)}</li>`).join('')}</ul>
-        <p><strong>Level Lessons:</strong></p>
-        <ul>${levelInfo.levelLessons.map(level => `<li>${checkValue(level)}</li>`).join('')}</ul>
-      `;
-    } else {
-      console.error("Failed to update level info: levelInfo is null or undefined");
-    }
-  } catch (error) {
-    console.error("Failed to update level info:", error);
-  }
-}
-
-// Function to update lesson info
-async function updateLessonInfo(courseId, levelId, lessonId) {
-  try {
-    const lessonInfo = await fetchLessonInfo(courseId, levelId, lessonId);
-    if (lessonInfo) {
-      const lessonInfoContainer = document.getElementById("lessonInfoContainer");
-
-      lessonInfoContainer.innerHTML = `
-          <h2>${checkValue(lessonInfo.lessonName)}</h2>
-          <p><strong>Lesson Number:</strong> ${checkValue(lessonInfo.lessonNumber)}</p>
-          <p><strong>Lesson Image:</strong></p>
-          <p><a href="${checkValue(lessonInfo.lessonImage)}" target="_blank" style="color: black;">${checkValue(lessonInfo.lessonImage)}</a></p>
-          <p><strong>Lesson Topic:</strong> ${checkValue(lessonInfo.lessonTopic)}</p>
-          <p><strong>Lesson Goal:</strong> ${checkValue(lessonInfo.lessonGoal)}</p>
-          <p><strong>Lesson Tools:</strong> ${lessonInfo.lessonTools.map(checkValue).join(', ')}</p>
-          <p><strong>Concepts:</strong></p>
-          <ul>
-            <li><strong>Computer Science:</strong> ${lessonInfo.lessonConcepts.conceptComputerScience.map(checkValue).join(', ')}</li>
-            <li><strong>Science:</strong> ${lessonInfo.lessonConcepts.conceptScience.map(checkValue).join(', ')}</li>
-            <li><strong>Tech:</strong> ${lessonInfo.lessonConcepts.conceptTech.map(checkValue).join(', ')}</li>
-            <li><strong>Engineering:</strong> ${lessonInfo.lessonConcepts.conceptEngineering.map(checkValue).join(', ')}</li>
-            <li><strong>Art:</strong> ${lessonInfo.lessonConcepts.conceptArt.map(checkValue).join(', ')}</li>
-            <li><strong>Math:</strong> ${lessonInfo.lessonConcepts.conceptMath.map(checkValue).join(', ')}</li>
-            <li><strong>Skill:</strong> ${lessonInfo.lessonConcepts.conceptSkill.map(checkValue).join(', ')}</li>
-          </ul>
-          <p><strong>Materials:</strong></p>
-          <ul>
-            <li><strong>Lesson Plan:</strong> <a href="${checkValue(lessonInfo.materials.lessonPlan?.materialLink)}" target="_blank" style="color: black;">${checkValue(lessonInfo.materials.lessonPlan?.materialName)}</a></li>
-            <li><strong>Slide:</strong> <a href="${checkValue(lessonInfo.materials.slide?.materialLink)}" target="_blank" style="color: black;">${checkValue(lessonInfo.materials.slide?.materialName)}</a></li>
-            <li><strong>Summary:</strong> <a href="${checkValue(lessonInfo.materials.summary?.materialLink)}" target="_blank" style="color: black;">${checkValue(lessonInfo.materials.summary?.materialName)}</a></li>
-            <li><strong>Quiz:</strong> <a href="${checkValue(lessonInfo.materials.quiz?.materialLink)}" target="_blank" style="color: black;">${checkValue(lessonInfo.materials.quiz?.materialName)}</a></li>
-            <li><strong>Video:</strong> <a href="${checkValue(lessonInfo.materials.video?.materialLink)}" target="_blank" style="color: black;">${checkValue(lessonInfo.materials.video?.materialName)}</a></li>
-          </ul>
-          <p><strong>Project:</strong></p>
-          <ul>
-            <li><strong>Project Name:</strong> ${checkValue(lessonInfo.project.projectName)}</li>
-            <li><strong>Project Description:</strong> ${checkValue(lessonInfo.project.projectDescription)}</li>
-            <li><strong>Project Related Concepts:</strong> ${lessonInfo.project.projectRelatedConcepts.map(checkValue).join(', ')}</li>
-            <li><strong>Project Tools:</strong> ${lessonInfo.project.projectTools.map(checkValue).join(', ')}</li>
-            <li><strong>Project Instruction:</strong> <a href="${checkValue(lessonInfo.project.projectInstruction)}" target="_blank" style="color: black;">${checkValue(lessonInfo.project.projectInstruction)}</a></li>
-          </ul>
-        `;
-    } else {
-      console.error("Failed to update lesson info: lessonInfo is null or undefined");
-    }
-  } catch (error) {
-    console.error("Failed to update lesson info:", error);
-  }
 }
 
 // Event listener for Course Info button
