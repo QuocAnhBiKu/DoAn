@@ -9,6 +9,7 @@ body {
     margin: 0;
 }
 
+/* Styling for the left column */
 .left-column {
     width: 40%;
     padding: 20px;
@@ -16,12 +17,13 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: fixed;
-    top: 20px; /* Cách lề trên 20px */
-    bottom: 20px; /* Cách lề dưới 20px */
-    left: 20px; /* Cách lề trái 20px */
-    overflow-y: auto; /* Cho phép cuộn khi nội dung vượt quá kích thước */
+    top: 20px;
+    bottom: 20px;
+    left: 20px;
+    overflow-y: auto;
 }
 
+/* Styling for the right column */
 .right-column {
     width: 50%;
     padding: 20px;
@@ -29,11 +31,11 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: fixed;
-    top: 20px; /* Cách lề trên 20px */
-    bottom: 20px; /* Cách lề dưới 20px */
-    right: 20px; /* Cách lề phải 10px */
-    overflow-y: auto; /* Cho phép cuộn khi nội dung vượt quá kích thước */
-    display: none;
+    top: 20px;
+    bottom: 20px;
+    right: 20px;
+    overflow-y: auto;
+    display: none; /* Hidden by default */
 }
 
 /* Center login section */
@@ -50,20 +52,23 @@ body {
     background-color: rgba(255, 255, 255, 0.9);
 }
 
+/* Hidden class to hide elements */
 .hidden {
     display: none;
 }
 
+/* Overlay styling */
 .overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Increase opacity for more blur effect */
+    background-color: rgba(0, 0, 0, 0.7);
     z-index: 500;
 }
 
+/* Dropdown styling */
 select {
     width: 50%;
     padding: 10px;
@@ -78,6 +83,7 @@ select:disabled {
     cursor: not-allowed;
 }
 
+/* Button styling */
 button {
     padding: 10px 20px;
     background-color: #4CAF50;
@@ -88,6 +94,7 @@ button {
     font-size: 16px;
 }
 
+/* Info button styling with active and disabled states */
 .info-button {
     padding: 10px 20px;
     background-color: #01d6c4;
@@ -96,16 +103,17 @@ button {
     cursor: pointer;
     margin-left: 10px;
     display: inline-block;
-    opacity: 0.5; /* Make button semi-transparent when disabled */
-    pointer-events: none; /* Prevent clicking when disabled */
+    opacity: 0.5;
+    pointer-events: none;
     font-size: 16px;
 }
 
 .info-button.active {
-    opacity: 1; /* Make button opaque when enabled */
-    pointer-events: auto; /* Allow clicking when enabled */
+    opacity: 1;
+    pointer-events: auto;
 }
 
+/* Info section styling */
 .info-section {
     margin-bottom: 20px;
     border: 1px solid #ddd;
@@ -113,7 +121,7 @@ button {
     border-radius: 8px;
     background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: none; /* Hide info sections initially */
+    display: none;
 }
 
 .info-section h3 {
@@ -129,6 +137,23 @@ button {
     font-size: 16px;
 }
 
+.table-container {
+    overflow-x: auto;
+    max-width: 100%;
+    }
+
+.table-container table {
+    width: 860px;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.table-container th, .table-container td {
+    border: 1px solid black;
+    padding: 8px;
+    white-space: normal;
+}
+
 /* Styles for login container */
 .container {
     display: flex;
@@ -142,9 +167,9 @@ button {
     background-color: #fff;
     padding: 40px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for emphasis */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
-    border: 2px solid #4285F4; /* Highlight with border color */
+    border: 2px solid #4285F4;
 }
 
 #googleButton {
@@ -157,58 +182,85 @@ button {
     font-size: 16px;
 }
 
+.info-icon {
+    display: none;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.info-icon img {
+    width: 20px;
+    height: auto;
+}
+
 /* Media Queries */
-/* Màn hình nhỏ (điện thoại di động) */
+/* Small screens (mobile devices) */
 @media (max-width: 576px) {
     body {
         flex-direction: column;
         align-items: stretch;
-        padding: 10px; /* Giảm padding cho màn hình nhỏ */
+        padding: 10px;
     }
 
     .left-column,
     .right-column {
         width: 100%;
         position: static;
-        padding: 10px; /* Giảm padding cho các cột */
+        padding: 10px;
     }
 
     .right-column {
-        order: 2; /* Đưa khung bên phải xuống dưới */
-        margin-top: 20px; /* Thêm khoảng cách giữa hai cột */
+        order: 2;
+        margin-top: 20px;
     }
 
     .left-column {
         order: 1;
     }
+
+    .info-button {
+        display: none;
+    }
+    
+    .info-icon {
+        display: inline-block;
+    }
 }
 
-/* Màn hình trung bình (máy tính bảng) */
+/* Medium screens (tablets) */
 @media (min-width: 577px) and (max-width: 768px) {
     body {
         flex-direction: column;
         align-items: stretch;
-        padding: 15px; /* Tăng padding cho màn hình trung bình */
+        padding: 15px;
     }
 
     .left-column,
     .right-column {
         width: 95%;
         position: static;
-        padding: 15px; /* Tăng padding cho các cột */
+        padding: 15px;
     }
 
     .right-column {
-        order: 2; /* Đưa khung bên phải xuống dưới */
-        margin-top: 30px; /* Tăng khoảng cách giữa hai cột */
+        order: 2;
+        margin-top: 30px;
     }
 
     .left-column {
         order: 1;
     }
+
+    .info-button {
+        display: none;
+    }
+    
+    .info-icon {
+        display: inline-block;
+    }
 }
 
-/* Màn hình lớn (iPad) */
+/* Large screens (iPad) */
 @media (min-width: 769px) and (max-width: 1024px) {
     body {
         flex-direction: column;
@@ -224,8 +276,8 @@ button {
     }
 
     .right-column {
-        order: 2; /* Đưa khung bên phải xuống dưới */
-        margin-top: 30px; /* Tạo khoảng cách giữa hai cột */
+        order: 2;
+        margin-top: 30px;
     }
 
     .left-column {
@@ -233,7 +285,7 @@ button {
     }
 }
 
-/* Màn hình vừa (máy tính xách tay, máy tính bàn nhỏ) */
+/* Medium-large screens (laptops, small desktops) */
 @media (min-width: 1025px) and (max-width: 1280px) {
     body {
         padding: 20px;

@@ -178,6 +178,7 @@ async function fetchData(courseId, levelId, lessonId) {
 }
 
 // Function to update course info
+// Function to update course info
 async function updateCourseInfo(courseId) {
   try {
     const courseInfo = await fetchCourseInfo(courseId);
@@ -187,26 +188,28 @@ async function updateCourseInfo(courseId) {
         <h2>${checkValue(courseInfo.courseName)}</h2>
         <p><strong>Course Description:</strong> ${checkValue(courseInfo.courseDescription)}</p>
         <p><strong>Course Tools:</strong></p>
-        <table style="width: 100%; border-collapse: collapse;">
-          <thead>
-            <tr>
-              <th style="border: 1px solid black; padding: 8px;">Name</th>
-              <th style="border: 1px solid black; padding: 8px;">Description</th>
-              <th style="border: 1px solid black; padding: 8px;">Version</th>
-              <th style="border: 1px solid black; padding: 8px;">Types</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${courseInfo.courseTools.map(tool => `
+        <div class="table-container">
+          <table>
+            <thead>
               <tr>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolName)}</td>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolDescription)}</td>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolVersion)}</td>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolTypes)}</td>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Version</th>
+                <th>Types</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              ${courseInfo.courseTools.map(tool => `
+                <tr>
+                  <td>${checkValue(tool.toolName)}</td>
+                  <td>${checkValue(tool.toolDescription)}</td>
+                  <td>${checkValue(tool.toolVersion)}</td>
+                  <td>${checkValue(tool.toolTypes)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
         <p><strong>Course Levels:</strong></p>
         <ul>${courseInfo.courseLevels.map(level => `<li>${checkValue(level)}</li>`).join('')}</ul>
       `;
@@ -376,7 +379,6 @@ async function handleCourseChange() {
   const levelSelect = document.getElementById("level");
   const lessonSelect = document.getElementById("lessonName");
   const levelInfoButton = document.getElementById("levelInfoButton");
-  const lessonInfoButton = document.getElementById("lessonInfoButton");
 
   // Reset level and lesson selection and buttons
   levelSelect.disabled = true;
@@ -384,12 +386,14 @@ async function handleCourseChange() {
   levelSelect.innerHTML = '<option value="" disabled selected>Select Level</option>';
   lessonSelect.innerHTML = '<option value="" disabled selected>Select Lesson</option>';
   levelInfoButton.classList.remove("active");
-  lessonInfoButton.classList.remove("active");
 
   if (selectedCourseId && !isLoadingCourses) {
     levelSelect.disabled = false;
     await populateLevels(selectedCourseId);
     courseInfoButton.classList.add("active");
+
+    // Check if there are options in levelSelect
+    handleInfoButtonDisplay(mediaQuery, levelSelect);
   } else {
     courseInfoButton.classList.remove("active");
   }
@@ -414,6 +418,9 @@ async function handleLevelChange() {
     lessonSelect.disabled = false;
     await populateLessons(selectedCourseId, selectedLevelId);
     levelInfoButton.classList.add("active");
+
+    // Check if there are options in lessonSelect
+    handleInfoButtonDisplay(mediaQuery, lessonSelect);
   } else {
     levelInfoButton.classList.remove("active");
   }
@@ -429,6 +436,9 @@ async function handleLessonChange() {
 
   if (selectedLessonId) {
     lessonInfoButton.classList.add("active");
+
+    // Check if there are options in lessonSelect
+    handleInfoButtonDisplay(mediaQuery, lessonSelect);
   } else {
     lessonInfoButton.classList.remove("active");
   }
@@ -436,6 +446,25 @@ async function handleLessonChange() {
   // Prevent reset on blur
   document.getElementById("lessonName").blur();
 }
+
+// Function to handle toggling between button and icon for "More Info"
+function handleInfoButtonDisplay(mediaQuery, selectElement) {
+  const infoButton = selectElement.nextElementSibling; // Assuming info button follows the select element
+  const infoIcon = selectElement.nextElementSibling.nextElementSibling; // Assuming info icon follows the info button
+
+  if (mediaQuery.matches && selectElement.options.length > 1) {
+    infoButton.style.display = 'none';
+    infoIcon.style.display = 'inline-block';
+  } else {
+    infoButton.style.display = 'inline-block';
+    infoIcon.style.display = 'none';
+  }
+}
+
+// Event listeners for dropdown changes
+document.getElementById("course").addEventListener("change", handleCourseChange);
+document.getElementById("level").addEventListener("change", handleLevelChange);
+document.getElementById("lessonName").addEventListener("change", handleLessonChange);
 
 // Helper function to check for empty, placeholder strings, or undefined values
 function checkValue(value) {
@@ -527,11 +556,6 @@ async function showLessonInfo() {
     await updateLessonInfo(selectedCourseId, selectedLevelId, selectedLessonId); // Fetch and display lesson info
   }
 }
-
-// Event listeners for dropdown changes
-document.getElementById("course").addEventListener("change", handleCourseChange);
-document.getElementById("level").addEventListener("change", handleLevelChange);
-document.getElementById("lessonName").addEventListener("change", handleLessonChange);
 
 // Function to show/hide sections based on selected create type
 document.getElementById("createType").addEventListener("change", function() {
