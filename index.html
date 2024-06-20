@@ -14,15 +14,16 @@
 <div class="left-column" id="main">
   <h1>Course Creator</h1>
 
-  <label for="course">Course:</label>
-  <select id="course" onchange="handleCourseChange()">
-    <option value="" disabled selected>Select Course</option>
-  </select>
-  <button class="info-button" id="courseInfoButton" onclick="showCourseInfo()">More Info</button>
-  <div class="info-icon" onclick="showCourseInfo()">
-    <img src="./assets/icons8-more-info.gif" alt="More Info Icon">
+  <div id = "courseSection">
+    <label for="course">Course:</label>
+    <select id="course" onchange="handleCourseChange()">
+      <option value="" disabled selected>Select Course</option>
+    </select>
+    <button class="info-button" id="courseInfoButton" onclick="showCourseInfo()">More Info</button>
+    <div class="info-icon" onclick="showCourseInfo()">
+      <img src="./assets/link-solid.svg" alt="More Info Icon">
+    </div>
   </div>
-  
 
   <div id="levelSection">
     <label for="level">Level:</label>
@@ -31,9 +32,8 @@
     </select>
     <button class="info-button" id="levelInfoButton" onclick="showLevelInfo()">More Info</button>
     <div class="info-icon" onclick="showLevelInfo()">
-      <img src="./assets/icons8-more-info.gif" alt="More Info Icon">
+      <img src="./assets/link-solid.svg" alt="More Info Icon">
     </div>
-    <br><br>
   </div>
 
   <div id="lessonSection">
@@ -43,9 +43,8 @@
     </select>
     <button class="info-button" id="lessonInfoButton" onclick="showLessonInfo()">More Info</button>
     <div class="info-icon" onclick="showLessonInfo()">
-      <img src="./assets/icons8-more-info.gif" alt="More Info Icon">
+      <img src="./assets/link-solid.svg" alt="More Info Icon">
     </div>
-    <br><br>
   </div>
 
   <h2>Create:</h2>
@@ -118,6 +117,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
 <script src="config.js"></script>
 <script src="index.js"></script>
+<script src="authGoogle.js"></script>
 
 </body>
 </html>

@@ -143,7 +143,7 @@ button {
     }
 
 .table-container table {
-    width: 860px;
+    width: 100%;
     border-collapse: collapse;
     table-layout: auto;
 }
@@ -190,7 +190,7 @@ button {
 
 .info-icon img {
     width: 20px;
-    height: auto;
+    height: 20px;
 }
 
 /* Media Queries */
@@ -200,6 +200,11 @@ button {
         flex-direction: column;
         align-items: stretch;
         padding: 10px;
+        font-size: 1.1rem;
+    }
+
+    select option {
+        font-size: 12px;
     }
 
     .left-column,
@@ -225,6 +230,10 @@ button {
     .info-icon {
         display: inline-block;
     }
+
+    .table-container table {
+        width: 600px;
+    }
 }
 
 /* Medium screens (tablets) */
@@ -233,6 +242,27 @@ button {
         flex-direction: column;
         align-items: stretch;
         padding: 15px;
+        font-size: 1.2rem;
+    }
+
+    select option {
+        font-size: 12px;
+    }
+
+    #course,
+    #level,
+    #lessonName{
+        height: 40px;
+        font-size: 1rem
+    }
+
+    #courseInfoButton,
+    #levelInfoButton,
+    #lessonInfoButton,
+    button[onclick^="generate"] {
+        height: 40px;
+        padding: 12px 24px;
+        font-size: 1rem;
     }
 
     .left-column,
@@ -251,12 +281,8 @@ button {
         order: 1;
     }
 
-    .info-button {
-        display: none;
-    }
-    
-    .info-icon {
-        display: inline-block;
+    .table-container table {
+        width: 800px;
     }
 }
 
@@ -266,6 +292,27 @@ button {
         flex-direction: column;
         align-items: stretch;
         padding: 20px;
+        font-size: 1.3rem;
+    }
+
+    select option {
+        font-size: 14px;
+    }
+
+    #course,
+    #level,
+    #lessonName{
+        height: 40px;
+        font-size: 1rem
+    }
+
+    #courseInfoButton,
+    #levelInfoButton,
+    #lessonInfoButton,
+    button[onclick^="generate"] {
+        height: 40px;
+        padding: 12px 24px;
+        font-size: 1rem;
     }
 
     .left-column,
@@ -282,6 +329,10 @@ button {
 
     .left-column {
         order: 1;
+    }
+
+    .table-container table {
+        width: 1000px;
     }
 }
 

@@ -1,80 +1,3 @@
-// Xử lý đăng nhập bằng Google
-document.getElementById('googleButton').addEventListener('click', () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithRedirect(provider);
-});
-
-// Xử lý sau khi trang web được chuyển hướng từ Google về
-firebase.auth().getRedirectResult().then((result) => {
-  if (result.credential) {
-    // Lấy ID token từ kết quả đăng nhập
-    const idToken = result.credential.idToken;
-    console.log(idToken); // For debugging purposes
-
-    // Lưu token vào localStorage với thời hạn 60 giây
-    localStorage.setItem('google_id_token', idToken);
-    setTimeout(() => {
-      localStorage.removeItem('google_id_token');
-      alert('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.');
-      showLoginForm();
-    }, 60000*5); // 60 giây
-
-    // Xử lý đăng nhập thành công
-    handleLoginSuccess();
-  }
-}).catch((error) => {
-  console.error('Đăng nhập bằng Google không thành công:', error);
-  alert('Đăng nhập bằng Google không thành công.');
-});
-
-// Function to handle login success
-function handleLoginSuccess() {
-  alert('Đăng nhập thành công!'); // Thông báo đăng nhập thành công
-
-  // Ẩn khung đăng nhập
-  hideLoginForm();
-
-  // Show main content
-  document.getElementById('main').style.display = 'block';
-
-  // Call populateCourses to load the course data
-  populateCourses();
-}
-
-// Function to hide login form
-function hideLoginForm() {
-  document.getElementById('loginSection').style.display = 'none';
-}
-
-// Function to show login form
-function showLoginForm() {
-  document.getElementById('loginSection').style.display = 'block';
-  document.getElementById('main').style.display = 'none';
-}
-
-// Check if user is already logged in
-window.onload = () => {
-  const token = localStorage.getItem('google_id_token');
-  if (token) {
-    // Verify the token with Firebase to ensure it's still valid
-    firebase.auth().signInWithCredential(firebase.auth.GoogleAuthProvider.credential(token))
-      .then(() => {
-        // Token is valid, consider user as logged in
-        handleLoginSuccess();
-      })
-      .catch(error => {
-        console.error('Token verification failed:', error);
-        // Token is invalid, clear the localStorage item
-        localStorage.removeItem('google_id_token');
-        // Show login section
-        showLoginForm();
-      });
-  } else {
-    // Token not present, show login section
-    showLoginForm();
-  }
-};
-
 // Endpoint API
 const APIMain = "http://localhost:3000/api"
 const coursesEndpoint = `${APIMain}/courses`;
@@ -177,7 +100,6 @@ async function fetchData(courseId, levelId, lessonId) {
   }
 }
 
-// Function to update course info
 // Function to update course info
 async function updateCourseInfo(courseId) {
   try {
@@ -379,6 +301,7 @@ async function handleCourseChange() {
   const levelSelect = document.getElementById("level");
   const lessonSelect = document.getElementById("lessonName");
   const levelInfoButton = document.getElementById("levelInfoButton");
+  const lessonInfoButton = document.getElementById("lessonInfoButton");
 
   // Reset level and lesson selection and buttons
   levelSelect.disabled = true;
@@ -386,14 +309,12 @@ async function handleCourseChange() {
   levelSelect.innerHTML = '<option value="" disabled selected>Select Level</option>';
   lessonSelect.innerHTML = '<option value="" disabled selected>Select Lesson</option>';
   levelInfoButton.classList.remove("active");
+  lessonInfoButton.classList.remove("active");
 
   if (selectedCourseId && !isLoadingCourses) {
     levelSelect.disabled = false;
     await populateLevels(selectedCourseId);
     courseInfoButton.classList.add("active");
-
-    // Check if there are options in levelSelect
-    handleInfoButtonDisplay(mediaQuery, levelSelect);
   } else {
     courseInfoButton.classList.remove("active");
   }
@@ -418,9 +339,6 @@ async function handleLevelChange() {
     lessonSelect.disabled = false;
     await populateLessons(selectedCourseId, selectedLevelId);
     levelInfoButton.classList.add("active");
-
-    // Check if there are options in lessonSelect
-    handleInfoButtonDisplay(mediaQuery, lessonSelect);
   } else {
     levelInfoButton.classList.remove("active");
   }
@@ -436,29 +354,12 @@ async function handleLessonChange() {
 
   if (selectedLessonId) {
     lessonInfoButton.classList.add("active");
-
-    // Check if there are options in lessonSelect
-    handleInfoButtonDisplay(mediaQuery, lessonSelect);
   } else {
     lessonInfoButton.classList.remove("active");
   }
 
   // Prevent reset on blur
   document.getElementById("lessonName").blur();
-}
-
-// Function to handle toggling between button and icon for "More Info"
-function handleInfoButtonDisplay(mediaQuery, selectElement) {
-  const infoButton = selectElement.nextElementSibling; // Assuming info button follows the select element
-  const infoIcon = selectElement.nextElementSibling.nextElementSibling; // Assuming info icon follows the info button
-
-  if (mediaQuery.matches && selectElement.options.length > 1) {
-    infoButton.style.display = 'none';
-    infoIcon.style.display = 'inline-block';
-  } else {
-    infoButton.style.display = 'inline-block';
-    infoIcon.style.display = 'none';
-  }
 }
 
 // Event listeners for dropdown changes
