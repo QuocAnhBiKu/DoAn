@@ -52,6 +52,53 @@ body {
     background-color: rgba(255, 255, 255, 0.9);
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
+  
+  #avatarContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  #userAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  #logoutSection {
+    display: none;
+    position: absolute;
+    left: -80px; /* Điều chỉnh khoảng cách bên trái */
+    z-index: 100; /* Đảm bảo nút logout luôn hiển thị trên avatar */
+  }
+  
+  #logoutButton {
+    padding: 8px 12px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    font-size: 14px;
+  }
+  
+  #avatarContainer:hover #logoutSection {
+    display: block;
+  }
+  
+  #avatarContainer:hover #userAvatar {
+    transform: scale(1.1);
+  }
+
 /* Hidden class to hide elements */
 .hidden {
     display: none;
@@ -169,12 +216,12 @@ button {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
-    border: 2px solid #4285F4;
+    border: 2px;
 }
 
 #googleButton {
     padding: 10px 20px;
-    background-color: #4285F4;
+    background-color: #03b49d;
     color: white;
     border: none;
     border-radius: 4px;
@@ -200,7 +247,7 @@ button {
         flex-direction: column;
         align-items: stretch;
         padding: 10px;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
     select option {
@@ -234,6 +281,21 @@ button {
     .table-container table {
         width: 600px;
     }
+
+    #userAvatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    #logoutSection {
+        display: none;
+        left: -70px;
+    }
+
+    #logoutButton {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
 }
 
 /* Medium screens (tablets) */
@@ -263,6 +325,21 @@ button {
         height: 40px;
         padding: 12px 24px;
         font-size: 1rem;
+    }
+
+    #userAvatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    #logoutSection {
+        display: none;
+        left: -70px;
+    }
+
+    #logoutButton {
+        padding: 6px 10px;
+        font-size: 14px;
     }
 
     .left-column,

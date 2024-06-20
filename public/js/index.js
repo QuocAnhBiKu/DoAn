@@ -1,5 +1,6 @@
 // Endpoint API
-const APIMain = "http://localhost:3000/api"
+const API_ENDPOINT = 'http://localhost:3000/api';
+const APIMain = "https://us-central1-testjsonloop.cloudfunctions.net/app/api"
 const coursesEndpoint = `${APIMain}/courses`;
 const levelsEndpoint = `${APIMain}/levels/`;
 const lessonsEndpoint = `${APIMain}/lessons/`;
@@ -482,3 +483,18 @@ if (selectedValue === "concept") {
 function showGenerateButton(sectionId) {
 document.getElementById(sectionId).querySelector("button").style.display = "block";
 }
+
+let logoutSectionVisible = false;
+
+// Function to handle click on user avatar
+document.getElementById('userAvatar').addEventListener('click', () => {
+  if (logoutSectionVisible) {
+    // Nếu đã hiển thị, thì ẩn lại
+    document.getElementById('logoutSection').style.display = 'none';
+    logoutSectionVisible = false;
+  } else {
+    // Nếu chưa hiển thị, thì hiển thị
+    document.getElementById('logoutSection').style.display = 'block';
+    logoutSectionVisible = true;
+  }
+});

@@ -5,23 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Course Creator</title>
   <link rel="stylesheet" href="index.css">
-  <link rel="icon" type="image/x-icon" href="./assets/TEKYLogo.ico">
+  <link rel="icon" type="image/x-icon" href="../assets/TEKYLogo.ico">
 </head>
 <body>
 
 <div class="overlay hidden" id="overlay"></div>
 
 <div class="left-column" id="main">
-  <h1>Course Creator</h1>
+  <div class="header">
+    <h1>Course Creator</h1>
+    <div id="avatarContainer">
+      <img id="userAvatar" src="" alt="User Avatar">
+      <div id="logoutSection" class="hidden">
+        <button id="logoutButton">Logout</button>
+      </div>
+    </div>
+  </div>
 
-  <div id = "courseSection">
+  <div id="courseSection">
     <label for="course">Course:</label>
     <select id="course" onchange="handleCourseChange()">
       <option value="" disabled selected>Select Course</option>
     </select>
     <button class="info-button" id="courseInfoButton" onclick="showCourseInfo()">More Info</button>
     <div class="info-icon" onclick="showCourseInfo()">
-      <img src="./assets/link-solid.svg" alt="More Info Icon">
+      <img src="../assets/link-solid.svg" alt="More Info Icon">
     </div>
   </div>
 
@@ -32,7 +40,7 @@
     </select>
     <button class="info-button" id="levelInfoButton" onclick="showLevelInfo()">More Info</button>
     <div class="info-icon" onclick="showLevelInfo()">
-      <img src="./assets/link-solid.svg" alt="More Info Icon">
+      <img src="../assets/link-solid.svg" alt="More Info Icon">
     </div>
   </div>
 
@@ -43,7 +51,7 @@
     </select>
     <button class="info-button" id="lessonInfoButton" onclick="showLessonInfo()">More Info</button>
     <div class="info-icon" onclick="showLessonInfo()">
-      <img src="./assets/link-solid.svg" alt="More Info Icon">
+      <img src="../assets/link-solid.svg" alt="More Info Icon">
     </div>
   </div>
 
@@ -115,9 +123,9 @@
 
 <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-<script src="config.js"></script>
-<script src="index.js"></script>
-<script src="authGoogle.js"></script>
+<script src="./js/config.js"></script>
+<script src="./js/index.js"></script>
+<script src="./js/authGoogle.js"></script>
 
 </body>
 </html>
