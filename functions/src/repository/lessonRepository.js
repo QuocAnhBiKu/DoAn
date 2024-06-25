@@ -82,7 +82,17 @@ class LessonRepository {
   
     return tools;
   }
-  
+  async getLevelById(courseId, levelId) {
+    const levelRef = doc(db, "Courses", courseId, "Levels", levelId);
+    const levelDoc = await getDoc(levelRef);
+
+    if (levelDoc.exists()) {
+      return levelDoc.data();
+    } else {
+      console.log(`Level with ID ${levelId} not found.`);
+      return null;
+    }
+  }
 
   async findLessonById(courseId, levelId, lessonId) {
     const lessonsRef = collection(
