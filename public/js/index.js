@@ -1,82 +1,6 @@
-// Xử lý đăng nhập bằng Google
-document.getElementById('googleButton').addEventListener('click', () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithRedirect(provider);
-});
-
-// Xử lý sau khi trang web được chuyển hướng từ Google về
-firebase.auth().getRedirectResult().then((result) => {
-  if (result.credential) {
-    // Lấy ID token từ kết quả đăng nhập
-    const idToken = result.credential.idToken;
-    console.log(idToken); // For debugging purposes
-
-    // Lưu token vào localStorage với thời hạn 60 giây
-    localStorage.setItem('google_id_token', idToken);
-    setTimeout(() => {
-      localStorage.removeItem('google_id_token');
-      alert('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.');
-      showLoginForm();
-    }, 60000*5); // 60 giây
-
-    // Xử lý đăng nhập thành công
-    handleLoginSuccess();
-  }
-}).catch((error) => {
-  console.error('Đăng nhập bằng Google không thành công:', error);
-  alert('Đăng nhập bằng Google không thành công.');
-});
-
-// Function to handle login success
-function handleLoginSuccess() {
-  alert('Đăng nhập thành công!'); // Thông báo đăng nhập thành công
-
-  // Ẩn khung đăng nhập
-  hideLoginForm();
-
-  // Show main content
-  document.getElementById('main').style.display = 'block';
-
-  // Call populateCourses to load the course data
-  populateCourses();
-}
-
-// Function to hide login form
-function hideLoginForm() {
-  document.getElementById('loginSection').style.display = 'none';
-}
-
-// Function to show login form
-function showLoginForm() {
-  document.getElementById('loginSection').style.display = 'block';
-  document.getElementById('main').style.display = 'none';
-}
-
-// Check if user is already logged in
-window.onload = () => {
-  const token = localStorage.getItem('google_id_token');
-  if (token) {
-    // Verify the token with Firebase to ensure it's still valid
-    firebase.auth().signInWithCredential(firebase.auth.GoogleAuthProvider.credential(token))
-      .then(() => {
-        // Token is valid, consider user as logged in
-        handleLoginSuccess();
-      })
-      .catch(error => {
-        console.error('Token verification failed:', error);
-        // Token is invalid, clear the localStorage item
-        localStorage.removeItem('google_id_token');
-        // Show login section
-        showLoginForm();
-      });
-  } else {
-    // Token not present, show login section
-    showLoginForm();
-  }
-};
-
 // Endpoint API
-const APIMain = "http://localhost:3000/api"
+const API_ENDPOINT = 'http://localhost:3000/api';
+const APIMain = "https://us-central1-testjsonloop.cloudfunctions.net/app/api"
 const coursesEndpoint = `${APIMain}/courses`;
 const levelsEndpoint = `${APIMain}/levels/`;
 const lessonsEndpoint = `${APIMain}/lessons/`;
@@ -187,26 +111,28 @@ async function updateCourseInfo(courseId) {
         <h2>${checkValue(courseInfo.courseName)}</h2>
         <p><strong>Course Description:</strong> ${checkValue(courseInfo.courseDescription)}</p>
         <p><strong>Course Tools:</strong></p>
-        <table style="width: 100%; border-collapse: collapse;">
-          <thead>
-            <tr>
-              <th style="border: 1px solid black; padding: 8px;">Name</th>
-              <th style="border: 1px solid black; padding: 8px;">Description</th>
-              <th style="border: 1px solid black; padding: 8px;">Version</th>
-              <th style="border: 1px solid black; padding: 8px;">Types</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${courseInfo.courseTools.map(tool => `
+        <div class="table-container">
+          <table>
+            <thead>
               <tr>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolName)}</td>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolDescription)}</td>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolVersion)}</td>
-                <td style="border: 1px solid black; padding: 8px;">${checkValue(tool.toolTypes)}</td>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Version</th>
+                <th>Types</th>
               </tr>
-            `).join('')}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              ${courseInfo.courseTools.map(tool => `
+                <tr>
+                  <td>${checkValue(tool.toolName)}</td>
+                  <td>${checkValue(tool.toolDescription)}</td>
+                  <td>${checkValue(tool.toolVersion)}</td>
+                  <td>${checkValue(tool.toolTypes)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
         <p><strong>Course Levels:</strong></p>
         <ul>${courseInfo.courseLevels.map(level => `<li>${checkValue(level)}</li>`).join('')}</ul>
       `;
@@ -437,6 +363,11 @@ async function handleLessonChange() {
   document.getElementById("lessonName").blur();
 }
 
+// Event listeners for dropdown changes
+document.getElementById("course").addEventListener("change", handleCourseChange);
+document.getElementById("level").addEventListener("change", handleLevelChange);
+document.getElementById("lessonName").addEventListener("change", handleLessonChange);
+
 // Helper function to check for empty, placeholder strings, or undefined values
 function checkValue(value) {
   if (value === "" || value === "--- o ---" || value === undefined || value === null) {
@@ -528,11 +459,6 @@ async function showLessonInfo() {
   }
 }
 
-// Event listeners for dropdown changes
-document.getElementById("course").addEventListener("change", handleCourseChange);
-document.getElementById("level").addEventListener("change", handleLevelChange);
-document.getElementById("lessonName").addEventListener("change", handleLessonChange);
-
 // Function to show/hide sections based on selected create type
 document.getElementById("createType").addEventListener("change", function() {
 var selectedValue = this.value;
@@ -557,3 +483,18 @@ if (selectedValue === "concept") {
 function showGenerateButton(sectionId) {
 document.getElementById(sectionId).querySelector("button").style.display = "block";
 }
+
+let logoutSectionVisible = false;
+
+// Function to handle click on user avatar
+document.getElementById('userAvatar').addEventListener('click', () => {
+  if (logoutSectionVisible) {
+    // Nếu đã hiển thị, thì ẩn lại
+    document.getElementById('logoutSection').style.display = 'none';
+    logoutSectionVisible = false;
+  } else {
+    // Nếu chưa hiển thị, thì hiển thị
+    document.getElementById('logoutSection').style.display = 'block';
+    logoutSectionVisible = true;
+  }
+});

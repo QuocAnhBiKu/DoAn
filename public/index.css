@@ -1,0 +1,426 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f4f4f4;
+    margin: 0;
+}
+
+/* Styling for the left column */
+.left-column {
+    width: 40%;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 20px;
+    bottom: 20px;
+    left: 20px;
+    overflow-y: auto;
+}
+
+/* Styling for the right column */
+.right-column {
+    width: 50%;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 20px;
+    bottom: 20px;
+    right: 20px;
+    overflow-y: auto;
+    display: none; /* Hidden by default */
+}
+
+/* Center login section */
+#loginSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
+  
+  #avatarContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  #userAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  #logoutSection {
+    display: none;
+    position: absolute;
+    left: -80px; /* Điều chỉnh khoảng cách bên trái */
+    z-index: 100; /* Đảm bảo nút logout luôn hiển thị trên avatar */
+  }
+  
+  #logoutButton {
+    padding: 8px 12px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    font-size: 14px;
+  }
+  
+  #avatarContainer:hover #logoutSection {
+    display: block;
+  }
+  
+  #avatarContainer:hover #userAvatar {
+    transform: scale(1.1);
+  }
+
+/* Hidden class to hide elements */
+.hidden {
+    display: none;
+}
+
+/* Overlay styling */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 500;
+}
+
+/* Dropdown styling */
+select {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+select:disabled {
+    background-color: #eee;
+    cursor: not-allowed;
+}
+
+/* Button styling */
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Info button styling with active and disabled states */
+.info-button {
+    padding: 10px 20px;
+    background-color: #01d6c4;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    display: inline-block;
+    opacity: 0.5;
+    pointer-events: none;
+    font-size: 16px;
+}
+
+.info-button.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Info section styling */
+.info-section {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+.info-section h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.info-section p {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.table-container {
+    overflow-x: auto;
+    max-width: 100%;
+    }
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.table-container th, .table-container td {
+    border: 1px solid black;
+    padding: 8px;
+    white-space: normal;
+}
+
+/* Styles for login container */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.form-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    border: 2px;
+}
+
+#googleButton {
+    padding: 10px 20px;
+    background-color: #03b49d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.info-icon {
+    display: none;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.info-icon img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Media Queries */
+/* Small screens (mobile devices) */
+@media (max-width: 576px) {
+    body {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    select option {
+        font-size: 12px;
+    }
+
+    .left-column,
+    .right-column {
+        width: 100%;
+        position: static;
+        padding: 10px;
+    }
+
+    .right-column {
+        order: 2;
+        margin-top: 20px;
+    }
+
+    .left-column {
+        order: 1;
+    }
+
+    .info-button {
+        display: none;
+    }
+    
+    .info-icon {
+        display: inline-block;
+    }
+
+    .table-container table {
+        width: 600px;
+    }
+
+    #userAvatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    #logoutSection {
+        display: none;
+        left: -70px;
+    }
+
+    #logoutButton {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+}
+
+/* Medium screens (tablets) */
+@media (min-width: 577px) and (max-width: 768px) {
+    body {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 15px;
+        font-size: 1.2rem;
+    }
+
+    select option {
+        font-size: 12px;
+    }
+
+    #course,
+    #level,
+    #lessonName{
+        height: 40px;
+        font-size: 1rem
+    }
+
+    #courseInfoButton,
+    #levelInfoButton,
+    #lessonInfoButton,
+    button[onclick^="generate"] {
+        height: 40px;
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+
+    #userAvatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    #logoutSection {
+        display: none;
+        left: -70px;
+    }
+
+    #logoutButton {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    .left-column,
+    .right-column {
+        width: 95%;
+        position: static;
+        padding: 15px;
+    }
+
+    .right-column {
+        order: 2;
+        margin-top: 30px;
+    }
+
+    .left-column {
+        order: 1;
+    }
+
+    .table-container table {
+        width: 800px;
+    }
+}
+
+/* Large screens (iPad) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    body {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 20px;
+        font-size: 1.3rem;
+    }
+
+    select option {
+        font-size: 14px;
+    }
+
+    #course,
+    #level,
+    #lessonName{
+        height: 40px;
+        font-size: 1rem
+    }
+
+    #courseInfoButton,
+    #levelInfoButton,
+    #lessonInfoButton,
+    button[onclick^="generate"] {
+        height: 40px;
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+
+    .left-column,
+    .right-column {
+        width: 96%;
+        position: static;
+        padding: 20px;
+    }
+
+    .right-column {
+        order: 2;
+        margin-top: 30px;
+    }
+
+    .left-column {
+        order: 1;
+    }
+
+    .table-container table {
+        width: 1000px;
+    }
+}
+
+/* Medium-large screens (laptops, small desktops) */
+@media (min-width: 1025px) and (max-width: 1280px) {
+    body {
+        padding: 20px;
+    }
+
+    .left-column,
+    .right-column {
+        padding: 20px;
+    }
+}
