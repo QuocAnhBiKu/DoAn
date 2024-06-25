@@ -21,7 +21,7 @@ async function findLessonById(req, res) {
     if (!lesson) {
       res.status(404).json({ message: "Lesson not found" });
     } else {
-      lastFetchedLesson = lesson; // Lưu trữ bài học đã tìm kiếm gần đây nhất
+      lastFetchedLesson = lesson;
       res.json(lesson);
     }
   } catch (error) {
