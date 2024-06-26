@@ -2,7 +2,8 @@ const { db } = require('../configs/firebaseConfig');
 const { doc, setDoc, getDoc } = require('firebase/firestore');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-dotenv.config();
+const path = require('path');
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 
 const signIn = async (googleUser) => {
