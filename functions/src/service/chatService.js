@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
-
-dotenv.config();
+const path = require('path');
+// Load .env từ thư mục gốc của functions
+dotenv.config({ path: path.resolve(__dirname, '../../.env')});
 
 const services = {
     quizService: async (user, inputs = {
