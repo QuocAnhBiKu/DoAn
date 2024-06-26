@@ -8,6 +8,7 @@ const projectsRoutes = require('./projectRoutes');
 const toolsRoutes = require('./toolRoutes');
 const materialsRoutes = require("./materialRoutes");
 
+const authenRoutes = require('./authenRoutes');
 const router = express.Router();
 
 // Sử dụng các routes từ các file routes khác
@@ -25,5 +26,7 @@ router.use('/projects', projectsRoutes);
 router.use('/tools', toolsRoutes);
 // Materials
 router.use('/materials', materialsRoutes);
+
+router.use('/auth',authenRoutes)
 
 module.exports = router;

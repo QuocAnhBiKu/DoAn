@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sign-In Test</title>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <h1>Google Sign-In Test</h1>
+    <button id="signInBtn">Sign In with Google</button>
+    <button id="signOutBtn" style="display:none;">Sign Out</button>
+    <div id="userInfo" style="display:none;">
+        <h2>User Information</h2>
+        <p id="userName"></p>
+        <p id="userEmail"></p>
+        <img id="userPhoto" alt="User Photo" style="width:100px;height:100px;">
+        <p id="userRole"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
