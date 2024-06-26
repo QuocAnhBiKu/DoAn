@@ -2,7 +2,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 
 // Load .env từ thư mục gốc của functions
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../') });
 
 const services = {
     quizService: async (user, inputs = {
@@ -38,7 +38,7 @@ const services = {
                 response_mode,
                 user,
             };
-            const response = await fetch(`${process.env.BASE_URL_QUIZ}/workflows/run`, {
+            const response = await fetch(`${process.env.BASE_URL}/workflows/run`, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify(body)
