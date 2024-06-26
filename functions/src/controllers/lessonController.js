@@ -11,8 +11,6 @@ async function getAllLessons(req, res) {
   }
 }
 
-let lastFetchedLesson = null;
-
 async function findLessonById(req, res) {
   const { courseId, levelId, lessonId } = req.query;
   
@@ -21,7 +19,6 @@ async function findLessonById(req, res) {
     if (!lesson) {
       res.status(404).json({ message: "Lesson not found" });
     } else {
-      lastFetchedLesson = lesson; // Lưu trữ bài học đã tìm kiếm gần đây nhất
       res.json(lesson);
     }
   } catch (error) {
@@ -29,7 +26,6 @@ async function findLessonById(req, res) {
     res.status(500).json({ message: "Internal server error" });
   }
 }
-
 
 async function findLessonByName(req, res) {
   const { courseId, levelId, lessonName } = req.params;
@@ -45,76 +41,9 @@ async function findLessonByName(req, res) {
     res.status(500).json({ message: "Internal server error" });
   }
 }
-async function getGlossaryForLesson(req, res) {
-  if (lastFetchedLesson) {
-    const glossary = {
-      lessonId: lastFetchedLesson.lessonId,
-      conceptComputerScience: lastFetchedLesson.lessonConcepts.conceptComputerScience,
-      conceptScience: lastFetchedLesson.lessonConcepts.conceptScience,
-      conceptTech: lastFetchedLesson.lessonConcepts.conceptTech,
-      conceptEngineering: lastFetchedLesson.lessonConcepts.conceptEngineering,
-      conceptArt: lastFetchedLesson.lessonConcepts.conceptArt,
-      conceptMath: lastFetchedLesson.lessonConcepts.conceptMath,
-    };
-    res.json(glossary);
-  } else {
-    res.status(404).json({ message: "No lesson found" });
-  }
-}
-async function getQuizData(req, res) {
-  if (!lastFetchedLesson) {
-    return res.status(404).json({ message: "No lesson found" });
-  }
-
-  const {
-    rememberCheckQuestionNum,
-    undersandCheckQuestionNum,
-    applyCheckQuestionNum,
-    analyzeCheckQuestionNum,
-    evaluateCheckQuestionNum,
-    createCheckQuestionNum,
-    questionTypes,
-    previousConcepts,
-    projectTools,
-  } = req.body;
-
-  try {
-    const quizData = {
-      lessonId: lastFetchedLesson.lessonId,
-      lessonImage: lastFetchedLesson.lessonImage,
-      lessonTopic: lastFetchedLesson.lessonTopic,
-      lessonGoal: lastFetchedLesson.lessonGoal,
-      levelDescription : lastFetchedLesson.levelDescription,
-      projectDescription: lastFetchedLesson.project,
-      projectTools,
-      conceptComputerScience: lastFetchedLesson.lessonConcepts.conceptComputerScience,
-      conceptScience: lastFetchedLesson.lessonConcepts.conceptScience,
-      conceptTech: lastFetchedLesson.lessonConcepts.conceptTech,
-      conceptEngineering: lastFetchedLesson.lessonConcepts.conceptEngineering,
-      conceptArt: lastFetchedLesson.lessonConcepts.conceptArt,
-      conceptMath: lastFetchedLesson.lessonConcepts.conceptMath,
-      previousConcepts,
-      rememberCheckQuestionNum,
-      undersandCheckQuestionNum,
-      applyCheckQuestionNum,
-      analyzeCheckQuestionNum,
-      evaluateCheckQuestionNum,
-      createCheckQuestionNum,
-      questionTypes,
-    };
-
-    res.json(quizData);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-}
-
 
 module.exports = {
   getAllLessons,
   findLessonById,
   findLessonByName,
-  getGlossaryForLesson,
-  getQuizData
 };

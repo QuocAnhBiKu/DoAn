@@ -1,4 +1,3 @@
-// routes/index.js
 const express = require('express');
 const coursesRoutes = require('./courseRoutes')
 const levelsRoutes = require('./levelRoutes');
@@ -7,6 +6,7 @@ const dataRoutes = require('./dataRoutes');
 const projectsRoutes = require('./projectRoutes');
 const toolsRoutes = require('./toolRoutes');
 const materialsRoutes = require("./materialRoutes");
+const chatRoutes = require('./chatRoutes');
 
 const authenRoutes = require('./authenRoutes');
 const router = express.Router();
@@ -26,6 +26,8 @@ router.use('/projects', projectsRoutes);
 router.use('/tools', toolsRoutes);
 // Materials
 router.use('/materials', materialsRoutes);
+// Chat
+router.use('/chat', chatRoutes);
 
 router.use('/auth',authenRoutes)
 

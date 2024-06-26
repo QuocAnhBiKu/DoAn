@@ -2,9 +2,8 @@ const express = require('express');
 const routes = require('./src/routes/index');
 const cors = require('cors');
 const functions = require('firebase-functions');
-require('dotenv').config();
-
-
+const dotenv = require('dotenv')
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;

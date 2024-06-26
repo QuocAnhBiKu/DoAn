@@ -1,9 +1,10 @@
 const { db } = require("../configs/firebaseConfig");
 const { collection, getDocs, where, query, doc, getDoc } = require("firebase/firestore");
 const Lesson = require("../model/lessonModel");
+const levelRepository = require('./levelRepository');
 const materialRepository = require('./materialRepository');
 const projectRepository = require('./projectRepository');
-const toolRepository = require('./toolRepository'); // Assuming you have a toolRepository
+const toolRepository = require('./toolRepository');
 
 class LessonRepository {
   async getAllLessons(courseId, levelId) {
@@ -29,7 +30,7 @@ class LessonRepository {
       const lesson = new Lesson(doc, courseId, levelId);
       lesson.materials = await this.getLessonMaterials(doc);
       lesson.project = await this.getLessonProject(doc);
-      lesson.tools = await this.getLessonTools(doc); // Fetch tools for the lesson
+      lesson.tools = await this.getLessonTools(doc);
       lessonsData.push(lesson);
     }
 
@@ -82,6 +83,7 @@ class LessonRepository {
   
     return tools;
   }
+
   async getLevelById(courseId, levelId) {
     const levelRef = doc(db, "Courses", courseId, "Levels", levelId);
     const levelDoc = await getDoc(levelRef);
@@ -114,7 +116,14 @@ class LessonRepository {
     const lesson = new Lesson(doc, courseId, levelId);
     lesson.materials = await this.getLessonMaterials(doc);
     lesson.project = await this.getLessonProject(doc);
-    lesson.tools = await this.getLessonTools(doc); // Fetch tools for the lesson
+    lesson.tools = await this.getLessonTools(doc);
+
+    // Fetch level data and include only levelDescription
+    const levelData = await this.getLevelById(courseId, levelId);
+    if (levelData) {
+      lesson.levelDescription = levelData.levelDescription;
+    }
+
     return lesson;
   }
 
@@ -138,7 +147,14 @@ class LessonRepository {
     const lesson = new Lesson(doc, courseId, levelId);
     lesson.materials = await this.getLessonMaterials(doc);
     lesson.project = await this.getLessonProject(doc);
-    lesson.tools = await this.getLessonTools(doc); // Fetch tools for the lesson
+    lesson.tools = await this.getLessonTools(doc);
+
+    // Fetch level data and include only levelDescription
+    const levelData = await this.getLevelById(courseId, levelId);
+    if (levelData) {
+      lesson.levelDescription = levelData.levelDescription;
+    }
+
     return lesson;
   }
 }
