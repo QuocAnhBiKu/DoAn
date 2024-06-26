@@ -3,7 +3,9 @@ const routes = require('./src/routes/index');
 const cors = require('cors');
 const firebaseAdmin = require('firebase-admin');
 const functions = require('firebase-functions');
+const dotenv = require('dotenv')
 
+dotenv.config();
 const serviceAccount = require('./serviceAccountKey.json');
 
 const app = express();
