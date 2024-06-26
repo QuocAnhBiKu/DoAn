@@ -1,8 +1,4 @@
 const lessonService = require("../service/lessonService");
-const glossaryService = require("../service/glossaryService");
-const quizService = require('../service/chatService');
-
-let lastFetchedLesson = null;
 
 async function getAllLessons(req, res) {
   const { courseId, levelId } = req.query;
@@ -23,8 +19,6 @@ async function findLessonById(req, res) {
     if (!lesson) {
       res.status(404).json({ message: "Lesson not found" });
     } else {
-      lastFetchedLesson = lesson;
-      glossaryService.setLastFetchedLesson(lesson); // Update lastFetchedLesson
       res.json(lesson);
     }
   } catch (error) {

@@ -48,6 +48,37 @@ const services = {
         } catch (error) {
             return { message: error.message }
         }
+    },
+
+    glosarryService: async (user, inputs = {
+        lessonId: "",
+        conceptComputerScience: "",
+        conceptScience: "",
+        conceptTech: "",
+        conceptEngineering: "",
+        conceptArt: "",
+        concepMath: "",
+    }, response_mode = 'blocking') => {
+        try {
+            const headers = {
+                "Authorization": `Bearer ${process.env.KEY_QUIZ_AI}`,
+                "Content-Type": "application/json"
+            };
+            const body = {
+                inputs,
+                response_mode,
+                user,
+            };
+            const response = await fetch(`${process.env.BASE_URL}/workflows/run`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(body)
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            return { message: error.message }
+        }
     }
 };
 

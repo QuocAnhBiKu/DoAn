@@ -1,4 +1,3 @@
-// routes/index.js
 const express = require('express');
 const coursesRoutes = require('./courseRoutes')
 const levelsRoutes = require('./levelRoutes');

@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const glossaryController = require('../controllers/glossaryController');
-const {quizController} = require('../controllers/chatController');
+const {quizController, glossaryController} = require('../controllers/chatController');
 
-// Glossary
-router.get('/glossary', glossaryController.getGlossaryForLesson);
+// Summary
+router.post('/generateSummary', glossaryController);
+// Quiz
 router.post("/generateQuiz", quizController);
 
 module.exports = router;
