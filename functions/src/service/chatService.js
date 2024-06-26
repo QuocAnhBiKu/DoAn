@@ -38,7 +38,7 @@ const services = {
                 response_mode,
                 user,
             };
-            const response = await fetch(`${process.env.BASE_URL}/workflows/run`, {
+            const response = await fetch(`${process.env.BASE_URL_QUIZ}/workflows/run`, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify(body)
@@ -61,7 +61,7 @@ const services = {
     }, response_mode = 'blocking') => {
         try {
             const headers = {
-                "Authorization": `Bearer ${process.env.KEY_QUIZ_AI}`,
+                "Authorization": `Bearer ${process.env.KEY_SUMMARY_AI}`,
                 "Content-Type": "application/json"
             };
             const body = {
@@ -69,7 +69,45 @@ const services = {
                 response_mode,
                 user,
             };
-            const response = await fetch(`${process.env.BASE_URL}/workflows/run`, {
+            const response = await fetch(`${process.env.BASE_URL_SUMMARY}/workflows/run`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(body)
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            return { message: error.message }
+        }
+    },
+
+    instructionService: async (user, inputs = {
+        lessonId: "",
+        lessonImage: "",
+        lessonTopic: "",
+        lessonGoal: "",
+        levelDescription: "",
+        projectDescription: "",
+        projectTools: "",
+        previousConcepts: "",
+        conceptComputerScience: "",
+        conceptScience: "",
+        conceptTech: "",
+        conceptEngineering: "",
+        conceptArt: "",
+        concepMath: "",
+    }, response_mode = 'blocking') => {
+        try {
+            const headers = {
+                "Authorization": `Bearer ${process.env.KEY_PROJECT_AI}`,
+                "Content-Type": "application/json"
+            };
+            const body = {
+                inputs,
+                response_mode,
+                user,
+            };
+            const response = await fetch(`${process.env.BASE_URL_PROJECT}/workflows/run`, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify(body)
