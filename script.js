@@ -18,7 +18,7 @@ const userInfo = document.getElementById('userInfo');
 const userName = document.getElementById('userName');
 const userEmail = document.getElementById('userEmail');
 const userPhoto = document.getElementById('userPhoto');
-const userRole = document.getElementById('userRole');
+// const userRole = document.getElementById('userRole');
 
 // Xử lý đăng nhập
 signInBtn.onclick = () => {
@@ -51,7 +51,6 @@ function updateUI(user) {
         userName.textContent = `Name: ${user.displayName}`;
         userEmail.textContent = `Email: ${user.email}`;
         userPhoto.src = user.photoURL;
-        checkUserRole();
     } else {
         signInBtn.style.display = 'block';
         signOutBtn.style.display = 'none';
@@ -79,7 +78,6 @@ function sendUserToServer(user) {
         .then(data => {
             console.log('Success:', data);
             localStorage.setItem('googleToken', data.token);
-            checkUserRole(user.email);
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -87,18 +85,3 @@ function sendUserToServer(user) {
     });
 }
 
-function checkUserRole() {
-    const token = localStorage.getItem('googleToken');
-    fetch(`http://localhost:3000/api/auth/check-role`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        userRole.textContent = `Role: ${data.role || 'Not set'}`;
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-}
