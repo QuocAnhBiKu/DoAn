@@ -92,9 +92,8 @@ const quizController = async (req, res) => {
 
     if (resBot && resBot.data && resBot.data.status === 'succeeded') {
       res.send(resBot.data.outputs.result.rs);
-    } else {
-      res.status(400).send({ error: 'Quiz generation failed' });
     }
+    res.send(resBot)
   } catch (error) {
     console.error('Error in quizController:', error);
     res.status(500).send({ error: 'Internal server error' });

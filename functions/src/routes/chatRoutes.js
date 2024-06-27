@@ -6,7 +6,7 @@ const { verifyToken, isAdmin, isUser } = require('../middleware/authmiddleware')
 // Summary
 router.post('/generateSummary', glossaryController);
 // Quiz
-router.post('/generateQuiz',verifyToken, isAdmin , quizController);
+router.post('/generateQuiz', quizController);
 // Project Instruction
 router.post('/generateProject', instrunctionController)
 
