@@ -72,7 +72,7 @@ function sendUserToServer(user) {
                     name: user.displayName,
                     email: user.email
                 },
-                googleToken: googleToken  // Gửi token trong body
+                googleToken: googleToken
             }),
         })
         .then(response => response.json())

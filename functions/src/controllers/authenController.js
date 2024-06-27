@@ -10,8 +10,19 @@ const signIn = async (req, res) => {
     }
     
     // Verify the token
-    const user = await authenService.signIn(googleUser);
-    res.status(200).json({ user, token: googleToken });
+    try {
+      const decodedToken = await admin.auth().verifyIdToken(googleToken);
+      
+      // Kiểm tra xem email từ token có khớp với email từ googleUser không
+      if (decodedToken.email !== googleUser.email) {
+        return res.status(401).json({ error: "Email mismatch" });
+      }
+      
+      const user = await authenService.signIn(googleUser);
+      res.status(200).json({ user, token: googleToken });
+    } catch (error) {
+      return res.status(401).json({ error: "Invalid token" });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
