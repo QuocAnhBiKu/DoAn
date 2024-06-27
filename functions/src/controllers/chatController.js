@@ -40,7 +40,6 @@ const glossaryController = async (req, res) => {
 // Quiz
 const quizController = async (req, res) => {
   const {
-    token,
     courseId,
     levelId,
     lessonId,
@@ -54,7 +53,7 @@ const quizController = async (req, res) => {
     previousConcepts,
   } = req.body;
 
-  const user = token;
+  const user = req.userEmail;
 
   const typeQuiz = questionTypes.join(",");
 

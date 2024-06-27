@@ -51,44 +51,47 @@ function updateUI(user) {
         userName.textContent = `Name: ${user.displayName}`;
         userEmail.textContent = `Email: ${user.email}`;
         userPhoto.src = user.photoURL;
-        checkUserRole(user.uid);
+        checkUserRole();
     } else {
         signInBtn.style.display = 'block';
         signOutBtn.style.display = 'none';
         userInfo.style.display = 'none';
+        localStorage.removeItem('googleToken');
+        localStorage.removeItem('userEmail');
     }
 }
 
-// Gửi thông tin người dùng đến server
 function sendUserToServer(user) {
-    fetch('http://localhost:3000/api/auth/signin', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            googleUser: {
-                uid: user.uid,
-                email: user.email,
-                displayName: user.displayName,
-                photoURL: user.photoURL
-            }
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-        localStorage.setItem('token', data.token);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
+    user.getIdToken().then(googleToken => {
+        fetch('http://localhost:3000/api/auth/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${googleToken}`
+            },
+            body: JSON.stringify({
+                googleUser: {
+                    name: user.displayName,
+                    email: user.email
+                }
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            localStorage.setItem('googleToken', data.token);
+            localStorage.setItem('userEmail', user.email);
+            checkUserRole(user.email);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     });
 }
 
-// Kiểm tra role của người dùng
-function checkUserRole(uid) {
-    const token = localStorage.getItem('token');
-    fetch(`http://localhost:3000/api/auth/check-role/${uid}`, {
+function checkUserRole() {
+    const token = localStorage.getItem('googleToken');
+    fetch(`http://localhost:3000/api/auth/check-role`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -101,11 +104,3 @@ function checkUserRole(uid) {
         console.error('Error:', error);
     });
 }
-
-// Kiểm tra trạng thái đăng nhập khi tải trang
-firebase.auth().onAuthStateChanged((user) => {
-    updateUI(user);
-    if (user) {
-        sendUserToServer(user);
-    }
-});
