@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const {quizController, glossaryController, instrunctionController} = require('../controllers/chatController');
+const { quizController, glossaryController, instrunctionController } = require('../controllers/chatController');
 const { verifyToken, isAdmin, isUser } = require('../middleware/authmiddleware');
 
 // Summary
-router.post('/generateSummary', glossaryController);
+router.post('/generateSummary', verifyToken, glossaryController);
+
 // Quiz
-router.post('/generateQuiz',verifyToken, isAdmin , quizController);
+router.post('/generateQuiz', verifyToken, isAdmin, quizController);
+
 // Project Instruction
-router.post('/generateProject', instrunctionController)
+router.post('/generateProject', verifyToken, instrunctionController);
 
 module.exports = router;

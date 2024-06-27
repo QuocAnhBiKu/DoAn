@@ -1,9 +1,12 @@
-const jwt = require('jsonwebtoken');
+const admin = require('firebase-admin');
 const { checkRole } = require('../service/authenService');
-const dotenv = require('dotenv');
-dotenv.config();
 
-const verifyToken = (req, res, next) => {
+const serviceAccount = require('../configs/serviceAccountKey.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+const verifyToken = async (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];
 
   if (!token) {
@@ -11,8 +14,8 @@ const verifyToken = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.uid;
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    req.userEmail = decodedToken.email;
     next();
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized!" });
@@ -21,7 +24,7 @@ const verifyToken = (req, res, next) => {
 
 const isAdmin = async (req, res, next) => {
   try {
-    const role = await checkRole(req.userId);
+    const role = await checkRole(req.userEmail);
     if (role === 'admin') {
       next();
     } else {
@@ -34,7 +37,7 @@ const isAdmin = async (req, res, next) => {
 
 const isUser = async (req, res, next) => {
   try {
-    const role = await checkRole(req.userId);
+    const role = await checkRole(req.userEmail);
     if (role === 'user' || role === 'admin') {
       next();
     } else {
