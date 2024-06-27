@@ -3,21 +3,13 @@ const admin = require('firebase-admin');
 
 const signIn = async (req, res) => {
   try {
-    const { googleUser } = req.body;
-    const authHeader = req.headers.authorization;
-    
-    if (!authHeader) {
-      return res.status(401).json({ error: "No authorization header provided" });
-    }
-    
-    const googleToken = authHeader.split(' ')[1];
+    const { googleUser, googleToken } = req.body;
     
     if (!googleToken) {
       return res.status(401).json({ error: "No token provided" });
     }
     
     // Verify the token
-    const decodedToken = await admin.auth().verifyIdToken(googleToken);
     const user = await authenService.signIn(googleUser);
     res.status(200).json({ user, token: googleToken });
   } catch (error) {

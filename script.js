@@ -60,27 +60,25 @@ function updateUI(user) {
         localStorage.removeItem('userEmail');
     }
 }
-
 function sendUserToServer(user) {
     user.getIdToken().then(googleToken => {
         fetch('http://localhost:3000/api/auth/signin', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${googleToken}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 googleUser: {
                     name: user.displayName,
                     email: user.email
-                }
+                },
+                googleToken: googleToken  // Gửi token trong body
             }),
         })
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
             localStorage.setItem('googleToken', data.token);
-            localStorage.setItem('userEmail', user.email);
             checkUserRole(user.email);
         })
         .catch((error) => {
