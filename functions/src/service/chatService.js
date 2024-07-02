@@ -37,7 +37,7 @@ const services = {
                 response_mode,
                 user,
             };
-            const response = await fetch(`${process.env.BASE_URL_QUIZ}/workflows/run`, {
+            const response = await fetch(`${process.env.BASE_URL_AI}/workflows/run`, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify(body)
@@ -68,7 +68,7 @@ const services = {
                 response_mode,
                 user,
             };
-            const response = await fetch(`${process.env.BASE_URL_SUMMARY}/workflows/run`, {
+            const response = await fetch(`${process.env.BASE_URL_AI}/workflows/run`, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify(body)
@@ -106,7 +106,7 @@ const services = {
                 response_mode,
                 user,
             };
-            const response = await fetch(`${process.env.BASE_URL_PROJECT}/workflows/run`, {
+            const response = await fetch(`${process.env.BASE_URL_AI}/workflows/run`, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify(body)
