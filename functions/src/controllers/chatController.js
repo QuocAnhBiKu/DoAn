@@ -78,14 +78,12 @@ const quizController = async (req, res) => {
       createCheckQuestionNum,
       questionTypes: typeQuiz,
     };
-
-    console.log('Data sent to quizService:', inputs);
-
     const resBot = await quizService(user, inputs);
 
     if (resBot && resBot.data && resBot.data.status === 'succeeded') {
-      res.send(resBot.data.outputs.result.rs);
+      res.send(resBot.data.outputs.result);
     }
+    console.log(resBot)
     res.send(resBot)
   } catch (error) {
     console.error('Error in quizController:', error);
