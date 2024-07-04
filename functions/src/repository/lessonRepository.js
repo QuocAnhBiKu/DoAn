@@ -59,9 +59,19 @@ class LessonRepository {
   async getLessonProject(lessonDoc) {
     const projectId = lessonDoc.data().projectId;
     if (projectId) {
-      return await projectRepository.getProjectById(projectId);
+      const project = await projectRepository.getProjectById(projectId);
+      if (project) {
+        return project;
+      }
     }
-    return null;
+    return {
+      projectId: '',
+      projectName: '',
+      projectDescription: '',
+      projectRelatedConcepts: '',
+      projectTools: '',
+      projectInstruction: ''
+    };
   }
 
   async getLessonTools(lessonDoc) {
