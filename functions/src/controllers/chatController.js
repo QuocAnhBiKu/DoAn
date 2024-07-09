@@ -69,6 +69,12 @@ const quizController = async (req, res) => {
       levelDescription: lesson.levelDescription,
       projectDescription: lesson.project.projectDescription,
       projectTools: typeTools,
+      // conceptComputerScience: lesson.lessonConcepts.conceptComputerScience,
+      // conceptScience: lesson.lessonConcepts.conceptScience,
+      // conceptTech: lesson.lessonConcepts.conceptTech,
+      // conceptEngineering: lesson.lessonConcepts.conceptEngineering,
+      // conceptArt: lesson.lessonConcepts.conceptArt,
+      // conceptMath: lesson.lessonConcepts.conceptMath,
       previousConcepts,
       rememberCheckQuestionNum,
       understandCheckQuestionNum,
@@ -78,15 +84,13 @@ const quizController = async (req, res) => {
       createCheckQuestionNum,
       questionTypes: typeQuiz,
     };
-
-    console.log('Data sent to quizService:', inputs);
-
     const resBot = await quizService(user, inputs);
 
     if (resBot && resBot.data && resBot.data.status === 'succeeded') {
-      res.send(resBot.data.outputs.result.rs);
+      res.send(resBot.data.outputs.result);
     } else {
-      res.status(400).send({ error: 'Quiz generation failed' });
+      console.log(resBot);
+      res.send(resBot);
     }
   } catch (error) {
     console.error('Error in quizController:', error);

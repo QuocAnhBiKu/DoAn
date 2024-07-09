@@ -63,19 +63,8 @@ class LessonRepository {
       const project = await projectRepository.getProjectById(projectId);
       if (project) {
         return project;
-      } else {
-        // Return an object with keys as in your project model and empty string values
-        return {
-          projectId: '',
-          projectName: '',
-          projectDescription: '',
-          projectRelatedConcepts: '',
-          projectTools: '',
-          projectInstruction: ''
-        };
       }
     }
-    
     return {
       projectId: '',
       projectName: '',
