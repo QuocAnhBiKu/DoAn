@@ -69,6 +69,12 @@ const quizController = async (req, res) => {
       levelDescription: lesson.levelDescription,
       projectDescription: lesson.project.projectDescription,
       projectTools: typeTools,
+      // conceptComputerScience: lesson.lessonConcepts.conceptComputerScience,
+      // conceptScience: lesson.lessonConcepts.conceptScience,
+      // conceptTech: lesson.lessonConcepts.conceptTech,
+      // conceptEngineering: lesson.lessonConcepts.conceptEngineering,
+      // conceptArt: lesson.lessonConcepts.conceptArt,
+      // conceptMath: lesson.lessonConcepts.conceptMath,
       previousConcepts,
       rememberCheckQuestionNum,
       understandCheckQuestionNum,
@@ -82,9 +88,10 @@ const quizController = async (req, res) => {
 
     if (resBot && resBot.data && resBot.data.status === 'succeeded') {
       res.send(resBot.data.outputs.result);
+    } else {
+      console.log(resBot);
+      res.send(resBot);
     }
-    console.log(resBot)
-    res.send(resBot)
   } catch (error) {
     console.error('Error in quizController:', error);
     res.status(500).send({ error: 'Internal server error' });

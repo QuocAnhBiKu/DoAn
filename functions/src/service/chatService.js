@@ -17,7 +17,7 @@ const services = {
         conceptTech: "",
         conceptEngineering: "",
         conceptArt: "",
-        concepMath: "",
+        conceptMath: "",
         previousConcepts: "",
         rememberCheckQuestionNum: "",
         understandCheckQuestionNum: "",
@@ -26,15 +26,17 @@ const services = {
         evaluateCheckQuestionNum: "",
         createCheckQuestionNum: "",
         questionTypes: "",
-    }, response_mode = 'blocking') => {
+    }) => {
         try {
             const headers = {
                 "Authorization": `Bearer ${process.env.KEY_QUIZ_AI}`,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive'
             };
             const body = {
                 inputs,
-                response_mode,
+                response_mode: 'streaming',
                 user,
             };
             const response = await fetch(`${process.env.BASE_URL_AI}/workflows/run`, {
@@ -42,10 +44,27 @@ const services = {
                 headers: headers,
                 body: JSON.stringify(body)
             });
-            const data = await response.json();
-            return data;
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+            let result = '';
+            const processStream = async () => {
+                const { done, value } = await reader.read();
+                if (done) return;
+                if (value) {
+                    result += decoder.decode(value, { stream: true });
+                }
+                await processStream();
+            };
+            await processStream();
+            const datas = result.split("\n\n").filter(Boolean); // Filter out any empty strings
+            const len = datas.length;
+            const jsonResponse = datas[len - 1].replace(/data: /, ""); // Get the last complete JSON chunk
+            return JSON.parse(jsonResponse);
         } catch (error) {
-            return { message: error.message }
+            throw new Error(error.message);
         }
     },
 
