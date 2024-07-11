@@ -1,7 +1,7 @@
 const lessonService = require("../service/lessonService");
-const { quizService, glosarryService, instructionService} = require("../service/chatService");
+const { quizService, glosarryService, instructionService } = require("../service/chatService");
 
-// Summary
+// Controller cho Summary
 const glossaryController = async (req, res) => {
   const {
     token,
@@ -13,8 +13,10 @@ const glossaryController = async (req, res) => {
   const user = token;
 
   try {
+    // Tìm kiếm thông tin bài học dựa trên courseId, levelId, lessonId
     const lesson = await lessonService.findLessonById(courseId, levelId, lessonId);
 
+    // Chuẩn bị các thông tin đầu vào cho glosarryService
     const inputs = {
       lessonId,
       conceptComputerScience: lesson.lessonConcepts.conceptComputerScience.join(","),
@@ -27,9 +29,10 @@ const glossaryController = async (req, res) => {
 
     console.log('Data sent to glosarryService:', inputs);
 
+    // Gọi glosarryService để tạo từ điển thuật ngữ
     const resBot = await glosarryService(user, inputs);
 
-    res.send(resBot);
+    res.send(resBot); // Trả về kết quả từ glosarryService
 
   } catch (error) {
     console.error('Error in glossaryController:', error);
@@ -37,7 +40,7 @@ const glossaryController = async (req, res) => {
   }
 };
 
-// Quiz
+// Controller cho Quiz
 const quizController = async (req, res) => {
   const {
     courseId,
@@ -53,14 +56,16 @@ const quizController = async (req, res) => {
     previousConcepts,
   } = req.body;
 
-  const user = req.userEmail;
+  const user = req.userEmail; // Lấy thông tin user từ request
 
-  const typeQuiz = questionTypes.join(",");
+  const typeQuiz = questionTypes.join(","); // Chuyển đổi các loại câu hỏi thành chuỗi
 
   try {
+    // Tìm kiếm thông tin bài học dựa trên courseId, levelId, lessonId
     const lesson = await lessonService.findLessonById(courseId, levelId, lessonId);
-    const typeTools = lesson.project.tools.map(tool => tool.toolName).join(", ");
+    const typeTools = lesson.project.tools.map(tool => tool.toolName).join(", "); // Lấy danh sách công cụ từ dự án
 
+    // Chuẩn bị các thông tin đầu vào cho quizService
     const inputs = {
       lessonId,
       lessonImage: lesson.lessonImage,
@@ -84,13 +89,15 @@ const quizController = async (req, res) => {
       createCheckQuestionNum,
       questionTypes: typeQuiz,
     };
+
+    // Gọi quizService để tạo bài kiểm tra
     const resBot = await quizService(user, inputs);
 
     if (resBot && resBot.data && resBot.data.status === 'succeeded') {
-      res.send(resBot.data.outputs.result);
+      res.send(resBot.data.outputs.result); // Trả về kết quả từ quizService nếu thành công
     } else {
       console.log(resBot);
-      res.send(resBot);
+      res.send(resBot); // Trả về kết quả từ quizService nếu không thành công
     }
   } catch (error) {
     console.error('Error in quizController:', error);
@@ -98,8 +105,8 @@ const quizController = async (req, res) => {
   }
 };
 
-// Project Instruction
-const instrunctionController = async (req, res) => {
+// Controller cho Project Instruction
+const instructionController = async (req, res) => {
   const {
     token,
     courseId,
@@ -108,12 +115,14 @@ const instrunctionController = async (req, res) => {
     previousConcepts,
   } = req.body;
 
-  const user = token;
+  const user = token; // Lấy thông tin user từ token
 
   try {
+    // Tìm kiếm thông tin bài học dựa trên courseId, levelId, lessonId
     const lesson = await lessonService.findLessonById(courseId, levelId, lessonId);
-    const typeTools = lesson.project.tools.map(tool => tool.toolName).join(", ");
+    const typeTools = lesson.project.tools.map(tool => tool.toolName).join(", "); // Lấy danh sách công cụ từ dự án
 
+    // Chuẩn bị các thông tin đầu vào cho instructionService
     const inputs = {
       lessonId,
       lessonImage: lesson.lessonImage,
@@ -133,19 +142,18 @@ const instrunctionController = async (req, res) => {
 
     console.log('Data sent to instructionService:', inputs);
 
+    // Gọi instructionService để tạo hướng dẫn dự án
     const resBot = await instructionService(user, inputs);
 
     if (resBot && resBot.data && resBot.data.status === 'succeeded') {
-      res.send(resBot.data.outputs.result.rs);
+      res.send(resBot.data.outputs.result.rs); // Trả về kết quả từ instructionService nếu thành công
     } else {
-      res.status(400).send({ error: 'Quiz generation failed' });
+      res.status(400).send({ error: 'Quiz generation failed' }); // Trả về lỗi nếu không thành công
     }
   } catch (error) {
-    console.error('Error in quizController:', error);
+    console.error('Error in instructionController:', error);
     res.status(500).send({ error: 'Internal server error' });
   }
 };
 
-// Activity
-
-module.exports = {quizController, glossaryController, instrunctionController}
+module.exports = { quizController, glossaryController, instructionController };

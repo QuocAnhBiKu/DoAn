@@ -2,6 +2,7 @@
 
 const toolService = require('../service/toolService');
 
+// Hàm getAllTools: Lấy danh sách tất cả các công cụ từ service và trả về dưới dạng JSON
 async function getAllTools(req, res) {
   try {
     const tools = await toolService.getAllTools();
@@ -11,6 +12,7 @@ async function getAllTools(req, res) {
   }
 }
 
+// Hàm getToolByName: Lấy thông tin công cụ dựa trên tên công cụ từ service và trả về dưới dạng JSON
 async function getToolByName(req, res) {
   const { toolName } = req.params;
   try {
@@ -21,6 +23,7 @@ async function getToolByName(req, res) {
   }
 }
 
+// Hàm getToolById: Lấy thông tin công cụ dựa trên ID công cụ từ service và trả về dưới dạng JSON
 async function getToolById(req, res) {
   const { toolId } = req.params;
   try {
