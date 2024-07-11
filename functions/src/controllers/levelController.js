@@ -1,5 +1,6 @@
 const levelService = require('../service/levelService');
 
+// Hàm getAllLevelsForCourseController: Lấy tất cả các cấp độ của một khóa học
 async function getAllLevelsForCourseController(req, res) {
   const { courseId } = req.query;
   try {
@@ -11,8 +12,9 @@ async function getAllLevelsForCourseController(req, res) {
   }
 }
 
+// Hàm findLevelByIdController: Tìm cấp độ theo ID của một khóa học
 async function findLevelByIdController(req, res) {
-  const { courseId, levelId } = req.query; // Sử dụng req.query
+  const { courseId, levelId } = req.query;
   try {
     const level = await levelService.findLevelByIdService(courseId, levelId);
     if (!level) {
@@ -26,6 +28,7 @@ async function findLevelByIdController(req, res) {
   }
 }
 
+// Hàm findLevelByNameController: Tìm cấp độ theo tên của một khóa học
 async function findLevelByNameController(req, res) {
   const { courseId, levelName } = req.params;
   try {

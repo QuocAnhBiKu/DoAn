@@ -1,5 +1,6 @@
 const lessonRepository = require("../repository/lessonRepository");
 
+// Hàm getAllLessons: Lấy danh sách tất cả các bài học của một khóa học và một cấp độ cụ thể
 async function getAllLessons(courseId, levelId) {
   try {
     const lessons = await lessonRepository.getAllLessons(courseId, levelId);
@@ -9,6 +10,7 @@ async function getAllLessons(courseId, levelId) {
   }
 }
 
+// Hàm findLessonById: Tìm kiếm và trả về thông tin của một bài học dựa trên id bài học
 async function findLessonById(courseId, levelId, lessonId) {
   try {
     const lesson = await lessonRepository.findLessonById(courseId, levelId, lessonId);
@@ -18,6 +20,7 @@ async function findLessonById(courseId, levelId, lessonId) {
   }
 }
 
+// Hàm findLessonByName: Tìm kiếm và trả về thông tin của một bài học dựa trên tên bài học
 async function findLessonByName(courseId, levelId, lessonName) {
   try {
     const lesson = await lessonRepository.findLessonByName(courseId, levelId, lessonName);
