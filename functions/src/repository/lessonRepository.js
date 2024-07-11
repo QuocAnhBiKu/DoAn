@@ -7,6 +7,7 @@ const projectRepository = require('./projectRepository');
 const toolRepository = require('./toolRepository');
 
 class LessonRepository {
+  // Hàm lấy tất cả các bài học của một cấp độ trong một khóa học
   async getAllLessons(courseId, levelId) {
     const lessonsData = [];
 
@@ -22,6 +23,7 @@ class LessonRepository {
     return lessonsData;
   }
 
+  // Hàm data lấy tất cả các bài học của một cấp độ cùng với thông tin chi tiết
   async getAllLessonsForLevelWithDetails(courseId, levelId) {
     const lessonsData = [];
     const lessonsSnapshot = await getDocs(collection(db, 'Courses', courseId, 'Levels', levelId, 'Lessons'));
@@ -37,6 +39,7 @@ class LessonRepository {
     return lessonsData;
   }
 
+  // Hàm lấy thông tin tài liệu của một bài học
   async getLessonMaterials(lessonDoc) {
     const materials = {};
     const materialTypes = ['lessonPlan', 'slide', 'summary', 'quiz', 'video'];
@@ -56,6 +59,7 @@ class LessonRepository {
     return materials;
   }
 
+  // Hàm lấy thông tin dự án của một bài học
   async getLessonProject(lessonDoc) {
     const projectId = lessonDoc.data().projectId;
     
@@ -75,6 +79,7 @@ class LessonRepository {
     };
   }
 
+  // Hàm lấy thông tin công cụ của một bài học
   async getLessonTools(lessonDoc) {
     const toolIds = lessonDoc.data().lessonTools || [];
     const tools = [];
@@ -95,6 +100,7 @@ class LessonRepository {
     return tools;
   }
 
+  // Hàm lấy thông tin cấp độ theo ID
   async getLevelById(courseId, levelId) {
     const levelRef = doc(db, "Courses", courseId, "Levels", levelId);
     const levelDoc = await getDoc(levelRef);
@@ -107,6 +113,7 @@ class LessonRepository {
     }
   }
 
+  // Hàm tìm bài học theo ID
   async findLessonById(courseId, levelId, lessonId) {
     const lessonsRef = collection(
       db,
@@ -129,7 +136,7 @@ class LessonRepository {
     lesson.project = await this.getLessonProject(doc);
     lesson.tools = await this.getLessonTools(doc);
 
-    // Fetch level data and include only levelDescription
+    // Lấy dữ liệu cấp độ và chỉ bao gồm levelDescription
     const levelData = await this.getLevelById(courseId, levelId);
     if (levelData) {
       lesson.levelDescription = levelData.levelDescription;
@@ -138,6 +145,7 @@ class LessonRepository {
     return lesson;
   }
 
+  // Hàm tìm bài học theo tên
   async findLessonByName(courseId, levelId, lessonName) {
     const lessonsRef = collection(
       db,
@@ -160,7 +168,7 @@ class LessonRepository {
     lesson.project = await this.getLessonProject(doc);
     lesson.tools = await this.getLessonTools(doc);
 
-    // Fetch level data and include only levelDescription
+    // Lấy dữ liệu cấp độ và chỉ bao gồm levelDescription
     const levelData = await this.getLevelById(courseId, levelId);
     if (levelData) {
       lesson.levelDescription = levelData.levelDescription;

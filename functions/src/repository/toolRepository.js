@@ -1,9 +1,8 @@
-// repository/toolRepository.js
-
 const { db } = require('../configs/firebaseConfig');
 const { collection, getDocs, doc, getDoc, where, query } = require('firebase/firestore');
 const Tool = require('../model/toolModel');
 
+// Hàm lấy tất cả các công cụ
 async function getAllTools() {
   const toolsData = [];
   const toolsSnapshot = await getDocs(collection(db, 'Tools'));
@@ -23,6 +22,7 @@ async function getAllTools() {
   return toolsData;
 }
 
+// Hàm tìm công cụ theo tên
 async function getToolByName(toolName) {
   const toolsData = [];
   const q = query(collection(db, 'Tools'), where('toolName', '==', toolName));
@@ -43,6 +43,7 @@ async function getToolByName(toolName) {
   return toolsData;
 }
 
+// Hàm tìm công cụ theo ID
 async function getToolById(toolId) {
   const docRef = doc(db, 'Tools', toolId);
   const docSnap = await getDoc(docRef);
@@ -62,7 +63,7 @@ async function getToolById(toolId) {
 }
 
 module.exports = {
-  getAllTools,
-  getToolByName,
-  getToolById,
+  getAllTools, // Xuất hàm lấy tất cả các công cụ
+  getToolByName, // Xuất hàm tìm công cụ theo tên
+  getToolById, // Xuất hàm tìm công cụ theo ID
 };

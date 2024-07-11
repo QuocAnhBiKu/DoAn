@@ -10,6 +10,8 @@ class CourseRepository {
   constructor() {
     this.coursesCollection = collection(db, 'Courses');
   }
+
+  // Hàm data lấy tất cả các khóa học cùng với thông tin chi tiết về công cụ và cấp độ
   async getAllCoursesWithDetails() {
     const coursesData = [];
     const coursesSnapshot = await getDocs(this.coursesCollection);
@@ -52,6 +54,7 @@ class CourseRepository {
     return coursesData;
   }
 
+  // Hàm lấy data theo khóa học, cấp độ và bài học theo ID
   async findByIdData(courseId, levelId, lessonId) {
     const course = await this.findByCourseId(courseId);
     if (!course) return null;
@@ -71,6 +74,7 @@ class CourseRepository {
     return null;
   }
 
+  // Hàm lấy tất cả các khóa học
   async getAllCourses() {
     try {
       const coursesData = [];
@@ -108,7 +112,8 @@ class CourseRepository {
       throw error; // Throw the error to propagate it up
     }
   }
-  
+
+  // Hàm tìm khóa học theo ID
   async findByCourseId(courseId) {
     try {
       const courseDoc = await getDoc(doc(this.coursesCollection, courseId));
@@ -142,6 +147,8 @@ class CourseRepository {
       throw error; // Throw the error to propagate it up
     }
   }
+
+  // Hàm tìm khóa học theo tên
   async findByCourseName(courseName) {
     const coursesQuery = query(this.coursesCollection, where('courseName', '==', courseName));
     const coursesSnapshot = await getDocs(coursesQuery);

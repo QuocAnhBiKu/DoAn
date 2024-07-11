@@ -1,5 +1,5 @@
 const express = require('express');
-const coursesRoutes = require('./courseRoutes')
+const coursesRoutes = require('./courseRoutes');
 const levelsRoutes = require('./levelRoutes');
 const lessonsRoutes = require('./lessonRoutes');
 const dataRoutes = require('./dataRoutes');
@@ -7,28 +7,27 @@ const projectsRoutes = require('./projectRoutes');
 const toolsRoutes = require('./toolRoutes');
 const materialsRoutes = require("./materialRoutes");
 const chatRoutes = require('./chatRoutes');
-
 const authenRoutes = require('./authenRoutes');
 const router = express.Router();
 
 // Sử dụng các routes từ các file routes khác
-// Courses
+// Định tuyến cho Courses
 router.use('/courses', coursesRoutes);
-// Levels
+// Định tuyến cho Levels
 router.use('/levels', levelsRoutes);
-// Lessons
+// Định tuyến cho Lessons
 router.use('/lessons', lessonsRoutes);
-// Data
+// Định tuyến cho Data
 router.use('/getAll', dataRoutes);
-// Projects
+// Định tuyến cho Projects
 router.use('/projects', projectsRoutes);
-// Tools
+// Định tuyến cho Tools
 router.use('/tools', toolsRoutes);
-// Materials
+// Định tuyến cho Materials
 router.use('/materials', materialsRoutes);
-// Chat
+// Định tuyến cho Chat
 router.use('/chat', chatRoutes);
-
-router.use('/auth',authenRoutes)
+// Định tuyến cho Authen (Xác thực)
+router.use('/auth', authenRoutes);
 
 module.exports = router;

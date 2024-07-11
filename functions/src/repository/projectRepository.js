@@ -1,10 +1,9 @@
-// repository/projectRepository.js
-
 const { db } = require('../configs/firebaseConfig');
 const { collection, getDocs, doc, where, query, getDoc } = require('firebase/firestore');
 const Project = require('../model/projectModel');
 const toolRepository = require('./toolRepository'); // Import toolRepository
 
+// Hàm lấy tất cả các dự án
 async function getAllProjects() {
   const projectsData = [];
   const projectsSnapshot = await getDocs(collection(db, 'Projects'));
@@ -19,13 +18,14 @@ async function getAllProjects() {
       projectData.projectTools,
       projectData.projectInstruction
     );
-    project.tools = await getProjectTools(projectData.projectTools);
+    project.tools = await getProjectTools(projectData.projectTools); // Lấy thông tin công cụ cho dự án
     projectsData.push(project);
   }
 
   return projectsData;
 }
 
+// Hàm tìm dự án theo tên
 async function getProjectByName(projectName) {
   const projectsData = [];
   const q = query(collection(db, 'Projects'), where('projectName', '==', projectName));
@@ -41,13 +41,14 @@ async function getProjectByName(projectName) {
       projectData.projectTools,
       projectData.projectInstruction
     );
-    project.tools = await getProjectTools(projectData.projectTools);
+    project.tools = await getProjectTools(projectData.projectTools); // Lấy thông tin công cụ cho dự án
     projectsData.push(project);
   }
 
   return projectsData;
 }
 
+// Hàm tìm dự án theo ID
 async function getProjectById(projectId) {
   const docRef = doc(db, 'Projects', projectId);
   const docSnap = await getDoc(docRef);
@@ -62,14 +63,14 @@ async function getProjectById(projectId) {
       projectData.projectTools,
       projectData.projectInstruction
     );
-    project.tools = await getProjectTools(projectData.projectTools); // Fetch tools for the project
+    project.tools = await getProjectTools(projectData.projectTools); // Lấy thông tin công cụ cho dự án
     return project;
   } else {
     return null;
   }
 }
 
-// Helper function to fetch tools by their IDs
+// Hàm trợ giúp để lấy thông tin công cụ dựa vào ID của chúng
 async function getProjectTools(toolIds = []) {
   const tools = [];
 
@@ -90,7 +91,7 @@ async function getProjectTools(toolIds = []) {
 }
 
 module.exports = {
-  getAllProjects,
-  getProjectByName,
-  getProjectById,
+  getAllProjects, // Xuất hàm lấy tất cả các dự án
+  getProjectByName, // Xuất hàm tìm dự án theo tên
+  getProjectById, // Xuất hàm tìm dự án theo ID
 };

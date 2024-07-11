@@ -2,9 +2,9 @@ const { db } = require('../configs/firebaseConfig');
 const { collection, getDocs, doc, getDoc, query, where } = require('firebase/firestore');
 const Material = require('../model/materialModel');
 
+// Hàm lấy tất cả các tài liệu
 async function getAllMaterials() {
     const materialsData = [];
-
     const materialsSnapshot = await getDocs(collection(db, 'Materials'));
 
     materialsSnapshot.forEach(doc => {
@@ -21,6 +21,7 @@ async function getAllMaterials() {
     return materialsData;
 }
 
+// Hàm tìm tài liệu theo ID
 async function findByMaterialId(materialId) {
     const materialDoc = await getDoc(doc(db, 'Materials', materialId));
 
@@ -40,6 +41,7 @@ async function findByMaterialId(materialId) {
     return material;
 }
 
+// Hàm tìm tài liệu theo tên
 async function findByMaterialName(materialName) {
     const materialsSnapshot = await getDocs(query(collection(db, 'Materials'), where('materialName', '==', materialName)));
     const materialsData = [];
@@ -59,7 +61,7 @@ async function findByMaterialName(materialName) {
 }
 
 module.exports = {
-    getAllMaterials,
-    findByMaterialId,
-    findByMaterialName,
+    getAllMaterials, // Xuất hàm lấy tất cả các tài liệu
+    findByMaterialId, // Xuất hàm tìm tài liệu theo ID
+    findByMaterialName, // Xuất hàm tìm tài liệu theo tên
 };
