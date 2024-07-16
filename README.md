@@ -1,9 +1,15 @@
-WELCOME TO THE DOCS FOR BACKEND GENERATE-AI-DOCS\\
-*SETUP BACKEND*\\
-npm install\\
-*SETUP FIREBASE*\\
-First, you need to create or login account with Firebase(https://firebase.google.com/) then click "Go to the console", then create a new project. Follow the instruction of Firebase.\\
-*CONNECT FIREBASE*\\
+WELCOME TO THE DOCS FOR BACKEND GENERATE-AI-DOCS    
+
+*SETUP BACKEND*     
+
+npm install      
+
+*SETUP FIREBASE*      
+
+First, you need to create or login account with Firebase(https://firebase.google.com/) then click "Go to the console", then create a new project. Follow the instruction of Firebase.      
+
+*CONNECT FIREBASE*         
+
 Pay attention to the gear icon on the right side of the Project Overview. Click on it and select Project Settings -> General. Scroll down and click on the </> icon. Follow the Firebase setup instructions, then copy the following code:\\
 const firebaseConfig = {
   apiKey: "Your-api",
