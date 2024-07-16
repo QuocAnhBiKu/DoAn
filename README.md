@@ -1,8 +1,18 @@
-**WELCOME TO THE DOCS FOR BACKEND GENERATE-AI-DOCS** 
+# **WELCOME TO THE DOCS FOR BACKEND GENERATE-AI-DOCS** 
 
 **SETUP BACKEND**     
 
-npm install      
+Open terminal
+
+        npm install      
+
+Next 
+
+        cd functions
+
+        npm install
+
+to download libraries locally and libraries to host on firebase
 
 **SETUP FIREBASE**      
 
