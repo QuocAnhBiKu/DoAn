@@ -1,4 +1,4 @@
-WELCOME TO THE DOCS FOR BACKEND GENERATE-AI-DOCS    
+#WELCOME TO THE DOCS FOR BACKEND GENERATE-AI-DOCS#    
 
 *SETUP BACKEND*     
 
@@ -47,6 +47,8 @@ Next, navigate to Build -> Authentication on the left-hand side and click on "Ge
 
 Follow the steps in "connect firebase," then select the Service accounts tab. Scroll down and click on "Generate new private key" to download the file. Once downloaded, rename the file to serviceAccountKey.json. Then, copy this file into the configs directory. This completes the setup.      
 
-*Setup Funcitons*       
+*SETUP FUNCTION*       
 
-Navigate to Build -> Functions on the left-hand side and click on "Upgrade Project." Follow the Firebase instructions to upgrade your project (note that deploying server-side functions with Firebase will incur costs). Once the upgrade is complete, click "Get Started" and follow the Firebase instructions to set up Cloud Functions. This completes the process.     
+Navigate to Build -> Functions on the left-hand side and click on "Upgrade Project." Follow the Firebase instructions to upgrade your project (note that deploying server-side functions with Firebase will incur costs). Once the upgrade is complete, click "Get Started" and follow the Firebase instructions to set up Cloud Functions. This completes the process.  
+
+B1: 
