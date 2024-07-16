@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { quizController, glossaryController, instrunctionController } = require('../controllers/chatController');
+const { quizController, glossaryController, instructionController } = require('../controllers/chatController');
 const { verifyToken, isAdmin, isUser } = require('../middleware/authmiddleware');
 
 // Định tuyến cho chức năng tạo tóm tắt và xác thực token
@@ -10,6 +10,6 @@ router.post('/generateSummary', verifyToken, glossaryController);
 router.post('/generateQuiz', verifyToken, isAdmin, quizController);
 
 // Định tuyến cho chức năng tạo hướng dẫn dự án và xác thực token
-router.post('/generateProject', verifyToken, instrunctionController);
+router.post('/generateProject', verifyToken, instructionController);
 
 module.exports = router;
