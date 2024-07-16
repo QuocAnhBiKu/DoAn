@@ -51,4 +51,42 @@ Follow the steps in "connect firebase," then select the Service accounts tab. Sc
 
 Navigate to Build -> Functions on the left-hand side and click on "Upgrade Project." Follow the Firebase instructions to upgrade your project (note that deploying server-side functions with Firebase will incur costs). Once the upgrade is complete, click "Get Started" and follow the Firebase instructions to set up Cloud Functions. This completes the process.  
 
-B1: 
+*DEPLOY FUNCTION* 
+
+B1: Open terminal:
+
+On Linux, you can open the terminal by pressing Ctrl + Alt + T or searching for "Terminal" in the application menu.
+
+B2 Log in to Firebase:
+
+        sudo firebase login
+
+B3 Initialize Firebase Functions:
+
+        sudo firebase init functions
+
+Then follow the prompts:
+
+Are you ready to proceed?: Select Yes.
+
+Please select an option: Choose Use an existing project using the arrow keys.
+
+Select your previously created project: Choose your project.
+
+What language would you like to use to write Cloud Functions?: Select JavaScript.
+
+Do you want to use ESLint to catch probable bugs and enforce style?: Select No.
+
+File functions/package.json already exists. Overwrite?: Select No.
+
+File functions/index.js already exists. Overwrite?: Select No.
+
+File functions/.gitignore already exists. Overwrite?: Select No.
+
+Do you want to install dependencies with npm now?: Select No.
+
+B4: Deploy Firebase Functions:
+
+sudo firebase deploy --only functions
+
+That's it, how to deploy function to firebase
