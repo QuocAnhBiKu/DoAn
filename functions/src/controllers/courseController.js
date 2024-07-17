@@ -14,7 +14,7 @@ async function getAllCourses(req, res) {
 // Hàm findByCourseId: Tìm kiếm khóa học bằng courseId từ dịch vụ courseService và trả về thông tin khóa học tương ứng.
 async function findByCourseId(req, res) {
   try {
-    const courseId = req.query.id; // Lấy thông tin courseId từ query parameters
+    const courseId = req.query.courseId; // Lấy thông tin courseId từ query parameters
     const course = await courseService.findByCourseId(courseId);
     if (course) {
       res.json(course); // Trả về thông tin khóa học nếu tìm thấy

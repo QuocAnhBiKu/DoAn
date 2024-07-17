@@ -116,6 +116,9 @@ class CourseRepository {
   // Hàm tìm khóa học theo ID
   async findByCourseId(courseId) {
     try {
+      if (!courseId) {
+        throw new Error('CourseId is required');
+      }
       const courseDoc = await getDoc(doc(this.coursesCollection, courseId));
   
       if (!courseDoc.exists()) {
@@ -169,4 +172,4 @@ class CourseRepository {
   }
 }
 
-module.exports = CourseRepository;
+module.exports = new CourseRepository();
