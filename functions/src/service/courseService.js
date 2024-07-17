@@ -1,7 +1,6 @@
 // services/courseService.js
-const CourseRepository = require('../repository/courseRepository');
+const courseRepository= require('../repository/courseRepository');
 
-const courseRepository = new CourseRepository();
 
 // Hàm getAllCourses: Lấy tất cả các khóa học từ kho dữ liệu
 async function getAllCourses() {

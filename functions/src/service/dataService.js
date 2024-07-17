@@ -1,6 +1,5 @@
 // dataService.js
-const CourseRepository = require('../repository/courseRepository');
-const courseRepository = new CourseRepository();
+const courseRepository = require('../repository/courseRepository');
 
 // Hàm getAllData: Lấy tất cả dữ liệu của các khóa học với thông tin chi tiết
 async function getAllData() {
