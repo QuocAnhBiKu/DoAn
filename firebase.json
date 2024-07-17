@@ -1,6 +1,7 @@
 {
   "functions": [
     {
+      "timeoutSeconds": 540,
       "source": "functions",
       "codebase": "default",
       "ignore": [

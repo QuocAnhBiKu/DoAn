@@ -19,4 +19,8 @@ app.use('/api', routes);
 // app.listen(PORT, () => {
 //   console.log(`Server running on port ${PORT}`);
 // });
-exports.app = functions.https.onRequest(app);
+exports.app = functions
+  .runWith({
+    timeoutSeconds: 540, // Đặt timeout là 540 giây (9 phút)
+  })
+  .https.onRequest(app);
