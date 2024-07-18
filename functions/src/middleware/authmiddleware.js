@@ -62,3 +62,4 @@ module.exports = {
   isAdmin, // Xuất hàm isAdmin
   isUser // Xuất hàm isUser
 };
+// Sử dụng các hàm này để phần quyền và xác thực đăng nhập bằng cách import hàm này vào router muốn VD vào xem file ChatRouters trong package routes
